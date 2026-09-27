@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,100 +24,176 @@
     }
   </script>
   <style>
-    body { background-color: #0b0f19; color: #f1f5f9; font-family: system-ui, -apple-system, sans-serif; }
-    .glass-card { background: rgba(22, 30, 49, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    /* Light Mode as Default Styles */
+    body {
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    html.light body {
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    html.light .glass-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+    }
+    html.light .sub-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Dark Mode Overrides */
+    html.dark body {
+      background-color: #0b0f19;
+      color: #f1f5f9;
+    }
+    html.dark .glass-card {
+      background: rgba(22, 30, 49, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: none;
+    }
+    html.dark .sub-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #0b0f19; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    html.dark ::-webkit-scrollbar-thumb { background: #1e293b; }
+
+    /* Hover-expand side pane transitions */
+    .sidebar-hover-rail {
+      transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.28s ease;
+    }
+    .sidebar-label {
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased">
 
   <!-- TOP NAVBAR -->
-  <header class="h-16 border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-6 flex items-center justify-between">
+  <header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-6 flex items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
         <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
       </div>
       <div>
-        <span class="font-bold text-lg text-white tracking-tight flex items-center gap-2">
-          Aegis<span class="text-emerald-400">Finance</span>
-          <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
-            Risk & Forecasting Agent
+        <span class="font-bold text-lg tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
+          Aegis<span class="text-emerald-500">Finance</span>
+          <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium">
+            AI Risk & Cash Flow Agent
           </span>
         </span>
       </div>
     </div>
 
-    <div class="flex items-center gap-4">
-      <span class="hidden sm:inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        Standalone Web App Mode
+    <div class="flex items-center gap-3">
+      <!-- Light / Dark Mode Toggle Button -->
+      <button onclick="toggleTheme()" id="theme-toggle-btn" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition shadow-sm flex items-center gap-1.5 text-xs font-medium" title="Switch between Light & Dark Mode">
+        <i id="theme-icon" data-lucide="moon" class="w-4 h-4"></i>
+        <span id="theme-text" class="hidden sm:inline">Dark Mode</span>
+      </button>
+
+      <span class="hidden md:inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 font-medium">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        Ready & Active
       </span>
-      <button onclick="resetToSampleData()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+      <button onclick="resetToSampleData()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 transition flex items-center gap-1.5">
         <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-        <span>Reload Sample Data</span>
+        <span class="hidden sm:inline">Reset Sample Data</span>
       </button>
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
-  <div class="flex-1 flex max-w-7xl mx-auto w-full">
-    <!-- SIDEBAR NAV -->
-    <aside class="w-60 border-r border-slate-800 p-4 space-y-1 shrink-0 hidden md:block">
-      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
-      </button>
-      <button onclick="switchTab('transactions')" id="nav-transactions" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white">
-        <i data-lucide="receipt" class="w-4 h-4"></i> Transactions
-      </button>
-      <button onclick="switchTab('upload')" id="nav-upload" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white">
-        <i data-lucide="upload-cloud" class="w-4 h-4"></i> Upload Bank CSV
-      </button>
-      <button onclick="switchTab('analytics')" id="nav-analytics" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white">
-        <i data-lucide="pie-chart" class="w-4 h-4"></i> Analytics & Recurring
-      </button>
-      <button onclick="switchTab('goals')" id="nav-goals" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white">
-        <i data-lucide="target" class="w-4 h-4"></i> Savings Goals
-      </button>
-      <button onclick="switchTab('recommendations')" id="nav-recommendations" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white">
-        <i data-lucide="sparkles" class="w-4 h-4"></i> AI Recommendations
-      </button>
+  <!-- MAIN CONTAINER (WITH HOVER-VISIBLE SIDEBAR) -->
+  <div class="flex-1 flex max-w-7xl mx-auto w-full relative">
+
+    <!-- SIDEBAR NAV (VISIBLE / EXPANDS ON HOVER) -->
+    <aside
+      id="sidebar"
+      class="sidebar-hover-rail group fixed md:sticky top-16 h-[calc(100vh-4rem)] z-30 w-16 hover:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-2.5 space-y-1.5 shrink-0 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-2xl"
+    >
+      <div class="space-y-1">
+        <div class="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap overflow-hidden">
+          Navigation Menu
+        </div>
+
+        <!-- Tab Buttons -->
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 transition-all">
+          <i data-lucide="layout-dashboard" class="w-5 h-5 shrink-0"></i>
+          <span class="sidebar-label whitespace-nowrap opacity-0 group-hover:opacity-100">Dashboard</span>
+        </button>
+
+        <button onclick="switchTab('transactions')" id="nav-transactions" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="receipt" class="w-5 h-5 shrink-0"></i>
+          <span class="sidebar-label whitespace-nowrap opacity-0 group-hover:opacity-100">Transactions</span>
+        </button>
+
+        <button onclick="switchTab('upload')" id="nav-upload" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="upload-cloud" class="w-5 h-5 shrink-0"></i>
+          <span class="sidebar-label whitespace-nowrap opacity-0 group-hover:opacity-100">Upload Bank CSV</span>
+        </button>
+
+        <button onclick="switchTab('analytics')" id="nav-analytics" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="pie-chart" class="w-5 h-5 shrink-0"></i>
+          <span class="sidebar-label whitespace-nowrap opacity-0 group-hover:opacity-100">Analytics & Recurring</span>
+        </button>
+
+        <button onclick="switchTab('goals')" id="nav-goals" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="target" class="w-5 h-5 shrink-0"></i>
+          <span class="sidebar-label whitespace-nowrap opacity-0 group-hover:opacity-100">Savings Goals</span>
+        </button>
+
+        <button onclick="switchTab('recommendations')" id="nav-recommendations" class="nav-btn w-full flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="sparkles" class="w-5 h-5 shrink-0"></i>
+          <span class="sidebar-label whitespace-nowrap opacity-0 group-hover:opacity-100">AI Recommendations</span>
+        </button>
+      </div>
+
+      <!-- Hover hint footer -->
+      <div class="p-2 sub-card rounded-xl text-[11px] text-slate-500 dark:text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap overflow-hidden">
+        <p class="font-bold text-slate-700 dark:text-slate-200">Hover Sidebar Active</p>
+        <p class="text-[10px] text-slate-400">Hover over edge to expand</p>
+      </div>
     </aside>
 
     <!-- CONTENT BODY -->
-    <main class="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto">
+    <main class="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto w-full min-w-0">
 
       <!-- ================= PAGE: DASHBOARD ================= -->
       <section id="page-dashboard" class="space-y-6">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-2xl font-bold text-white tracking-tight">Financial Risk Cockpit</h1>
-            <p class="text-xs text-slate-400 mt-1">Real-time liquidity telemetry, spending anomaly detection, and cash flow forecast.</p>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Financial Risk Cockpit</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Real-time liquidity telemetry, spending anomaly detection, and cash flow forecast.</p>
           </div>
         </div>
 
         <!-- 4 Metric Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="glass-card p-5 rounded-2xl">
-            <div class="flex justify-between items-center text-xs text-slate-400 font-semibold uppercase">Total Income <i data-lucide="trending-up" class="w-4 h-4 text-emerald-400"></i></div>
-            <p id="stat-income" class="text-2xl font-bold text-white mt-2">$0.00</p>
-            <p class="text-[11px] text-emerald-400 mt-1">Direct deposits & inflows</p>
+            <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase">Total Income <i data-lucide="trending-up" class="w-4 h-4 text-emerald-500"></i></div>
+            <p id="stat-income" class="text-2xl font-bold text-slate-900 dark:text-white mt-2">$0.00</p>
+            <p class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-medium">Direct deposits & inflows</p>
           </div>
           <div class="glass-card p-5 rounded-2xl">
-            <div class="flex justify-between items-center text-xs text-slate-400 font-semibold uppercase">Total Expenses <i data-lucide="trending-down" class="w-4 h-4 text-rose-400"></i></div>
-            <p id="stat-expenses" class="text-2xl font-bold text-white mt-2">$0.00</p>
-            <p class="text-[11px] text-rose-400 mt-1">Living expenses & subscriptions</p>
+            <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase">Total Expenses <i data-lucide="trending-down" class="w-4 h-4 text-rose-500"></i></div>
+            <p id="stat-expenses" class="text-2xl font-bold text-slate-900 dark:text-white mt-2">$0.00</p>
+            <p class="text-[11px] text-rose-600 dark:text-rose-400 mt-1 font-medium">Living expenses & subscriptions</p>
           </div>
           <div class="glass-card p-5 rounded-2xl">
-            <div class="flex justify-between items-center text-xs text-slate-400 font-semibold uppercase">Net Cash Flow <i data-lucide="dollar-sign" class="w-4 h-4 text-blue-400"></i></div>
-            <p id="stat-net" class="text-2xl font-bold text-white mt-2">$0.00</p>
-            <p id="stat-net-sub" class="text-[11px] text-blue-400 mt-1">Net accumulated reserve</p>
+            <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase">Net Cash Flow <i data-lucide="dollar-sign" class="w-4 h-4 text-blue-500"></i></div>
+            <p id="stat-net" class="text-2xl font-bold text-slate-900 dark:text-white mt-2">$0.00</p>
+            <p id="stat-net-sub" class="text-[11px] text-blue-600 dark:text-blue-400 mt-1 font-medium">Net accumulated reserve</p>
           </div>
           <div class="glass-card p-5 rounded-2xl">
-            <div class="flex justify-between items-center text-xs text-slate-400 font-semibold uppercase">Savings Rate <i data-lucide="shield-check" class="w-4 h-4 text-purple-400"></i></div>
-            <p id="stat-rate" class="text-2xl font-bold text-white mt-2">0%</p>
-            <p class="text-[11px] text-purple-400 mt-1">Retained income ratio</p>
+            <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase">Savings Rate <i data-lucide="shield-check" class="w-4 h-4 text-purple-500"></i></div>
+            <p id="stat-rate" class="text-2xl font-bold text-slate-900 dark:text-white mt-2">0%</p>
+            <p class="text-[11px] text-purple-600 dark:text-purple-400 mt-1 font-medium">Retained income ratio</p>
           </div>
         </div>
 
@@ -126,33 +202,33 @@
           <!-- Risk Gauge Card -->
           <div class="glass-card p-6 rounded-2xl flex flex-col items-center justify-between text-center">
             <div class="flex justify-between items-center w-full mb-2">
-              <span class="text-xs font-semibold uppercase text-slate-400">Financial Risk Score</span>
-              <span id="risk-badge" class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Low Risk</span>
+              <span class="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Financial Risk Score</span>
+              <span id="risk-badge" class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Low Risk</span>
             </div>
             
             <div class="relative my-4 w-36 h-36 flex items-center justify-center">
               <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
-                <circle cx="70" cy="70" r="56" stroke="#1e293b" stroke-width="10" fill="transparent"></circle>
+                <circle cx="70" cy="70" r="56" stroke="#e2e8f0" class="dark:stroke-slate-800" stroke-width="10" fill="transparent"></circle>
                 <circle id="risk-svg-meter" cx="70" cy="70" r="56" stroke="#10b981" stroke-width="10" stroke-dasharray="351.8" stroke-dashoffset="70" stroke-linecap="round" fill="transparent" class="transition-all duration-1000"></circle>
               </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <span id="risk-score-num" class="text-3xl font-extrabold text-white">82</span>
-                <span class="text-[10px] text-slate-400">/ 100 Score</span>
+                <span id="risk-score-num" class="text-3xl font-extrabold text-slate-900 dark:text-white">82</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">/ 100 Score</span>
               </div>
             </div>
 
-            <div class="w-full space-y-2 text-xs pt-3 border-t border-slate-800">
-              <div class="flex justify-between text-slate-400">
+            <div class="w-full space-y-2 text-xs pt-3 border-t border-slate-200 dark:border-slate-800">
+              <div class="flex justify-between text-slate-500 dark:text-slate-400">
                 <span>Liquidity Runway:</span>
-                <span id="risk-runway-val" class="text-slate-200 font-semibold font-mono">4.2 months</span>
+                <span id="risk-runway-val" class="text-slate-800 dark:text-slate-200 font-semibold font-mono">4.2 months</span>
               </div>
-              <div class="flex justify-between text-slate-400">
+              <div class="flex justify-between text-slate-500 dark:text-slate-400">
                 <span>Spending Volatility:</span>
-                <span id="risk-volatility-val" class="text-slate-200 font-semibold font-mono">CV: 0.28 (Stable)</span>
+                <span id="risk-volatility-val" class="text-slate-800 dark:text-slate-200 font-semibold font-mono">CV: 0.28 (Stable)</span>
               </div>
-              <div class="flex justify-between text-slate-400">
+              <div class="flex justify-between text-slate-500 dark:text-slate-400">
                 <span>Savings Margin:</span>
-                <span id="risk-margin-val" class="text-emerald-400 font-semibold font-mono">+38.5%</span>
+                <span id="risk-margin-val" class="text-emerald-600 dark:text-emerald-400 font-semibold font-mono">+38.5%</span>
               </div>
             </div>
           </div>
@@ -161,12 +237,12 @@
           <div class="lg:col-span-2 glass-card p-6 rounded-2xl flex flex-col justify-between">
             <div class="flex justify-between items-center mb-4">
               <div>
-                <h3 class="text-sm font-semibold text-white">30-Day Cash Flow & Account Balance Projection</h3>
-                <p class="text-xs text-slate-400">Moving average spending combined with scheduled recurring commitments.</p>
+                <h3 class="text-sm font-semibold text-slate-900 dark:text-white">30-Day Cash Flow & Account Balance Projection</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Moving average spending combined with scheduled recurring commitments.</p>
               </div>
               <div class="text-right">
-                <span class="text-[11px] text-slate-400">Projected 30-Day Balance</span>
-                <p id="forecast-end-val" class="text-base font-bold text-emerald-400">$0.00</p>
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">Projected 30-Day Balance</span>
+                <p id="forecast-end-val" class="text-base font-bold text-emerald-600 dark:text-emerald-400">$0.00</p>
               </div>
             </div>
             <div class="h-64 w-full">
@@ -178,8 +254,8 @@
         <!-- Month over Month Chart & Anomalies -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="lg:col-span-2 glass-card p-6 rounded-2xl">
-            <h3 class="text-sm font-semibold text-white mb-1">Month-Over-Month Performance</h3>
-            <p class="text-xs text-slate-400 mb-4">Comparison of total monthly income vs total expenditures.</p>
+            <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-1">Month-Over-Month Performance</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Comparison of total monthly income vs total expenditures.</p>
             <div class="h-64 w-full">
               <canvas id="momChart"></canvas>
             </div>
@@ -189,17 +265,17 @@
           <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-2">
-                <h3 class="text-sm font-semibold text-white flex items-center gap-1.5">
-                  <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Flagged Outliers
+                <h3 class="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i> Flagged Outliers
                 </h3>
-                <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">IQR / Z-Score</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-semibold">IQR / Z-Score</span>
               </div>
-              <p class="text-xs text-slate-400 mb-3">Statistically anomalous charges flagged for review.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Statistically anomalous charges flagged for review.</p>
               <div id="anomalies-list" class="space-y-2.5">
                 <!-- Dynamically populated -->
               </div>
             </div>
-            <button onclick="switchTab('transactions')" class="mt-4 pt-3 border-t border-slate-800 text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center justify-between">
+            <button onclick="switchTab('transactions')" class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 font-semibold flex items-center justify-between">
               <span>View All In Transactions Table</span>
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </button>
@@ -211,10 +287,10 @@
       <section id="page-transactions" class="space-y-6 hidden">
         <div class="flex justify-between items-center">
           <div>
-            <h1 class="text-2xl font-bold text-white tracking-tight">Transactions</h1>
-            <p class="text-xs text-slate-400 mt-1">Browse, filter by category, edit classifications, and examine flagged anomalies.</p>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Transactions</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Browse, filter by category, edit classifications, and examine flagged anomalies.</p>
           </div>
-          <button onclick="openAddTxModal()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition">
+          <button onclick="openAddTxModal()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow-sm">
             <i data-lucide="plus" class="w-4 h-4"></i> Add Transaction
           </button>
         </div>
@@ -223,9 +299,9 @@
         <div class="glass-card p-4 rounded-2xl flex flex-col sm:flex-row gap-3 items-center">
           <div class="relative flex-1 w-full">
             <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-            <input id="tx-search-input" oninput="renderTransactions()" type="text" placeholder="Search merchant, description, or amount..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
+            <input id="tx-search-input" oninput="renderTransactions()" type="text" placeholder="Search merchant, description, or amount..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500" />
           </div>
-          <select id="tx-category-select" onchange="renderTransactions()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+          <select id="tx-category-select" onchange="renderTransactions()" class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-emerald-500">
             <option value="ALL">All Categories</option>
             <option value="Income">Income</option>
             <option value="Housing">Housing</option>
@@ -238,17 +314,17 @@
             <option value="Shopping">Shopping</option>
             <option value="Uncategorized">Uncategorized</option>
           </select>
-          <button id="tx-anomaly-filter-btn" onclick="toggleAnomalyFilter()" class="bg-slate-900 border border-slate-700 text-slate-400 hover:text-white px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 whitespace-nowrap">
-            <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-400"></i>
+          <button id="tx-anomaly-filter-btn" onclick="toggleAnomalyFilter()" class="bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 whitespace-nowrap">
+            <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-500"></i>
             <span id="tx-anomaly-btn-text">Anomalies Only</span>
           </button>
         </div>
 
         <!-- Table -->
-        <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+        <div class="glass-card rounded-2xl overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="bg-slate-900/80 border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase">
+              <thead class="bg-slate-100 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-400 uppercase">
                 <tr>
                   <th class="py-3 px-4">Date</th>
                   <th class="py-3 px-4">Description</th>
@@ -258,7 +334,7 @@
                   <th class="py-3 px-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody id="tx-table-body" class="divide-y divide-slate-800/60">
+              <tbody id="tx-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60">
                 <!-- Dynamically populated -->
               </tbody>
             </table>
@@ -269,48 +345,48 @@
       <!-- ================= PAGE: UPLOAD ================= -->
       <section id="page-upload" class="space-y-6 hidden">
         <div>
-          <h1 class="text-2xl font-bold text-white tracking-tight">Upload Bank CSV Statement</h1>
-          <p class="text-xs text-slate-400 mt-1">Drag and drop your statement file for automatic parsing, categorization, and statistical outlier scanning.</p>
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Upload Bank CSV Statement</h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Drag and drop your statement file for automatic parsing, categorization, and statistical outlier scanning.</p>
         </div>
 
-        <div id="upload-dropzone" ondragover="event.preventDefault(); this.classList.add('border-emerald-500');" ondragleave="this.classList.remove('border-emerald-500');" ondrop="handleDrop(event)" class="border-2 border-dashed border-slate-800 hover:border-slate-700 rounded-3xl p-10 flex flex-col items-center justify-center text-center bg-slate-900/40 transition">
-          <div class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 text-emerald-400">
+        <div id="upload-dropzone" ondragover="event.preventDefault(); this.classList.add('border-emerald-500');" ondragleave="this.classList.remove('border-emerald-500');" ondrop="handleDrop(event)" class="border-2 border-dashed border-slate-300 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 rounded-3xl p-10 flex flex-col items-center justify-center text-center bg-white dark:bg-slate-900/40 transition shadow-sm">
+          <div class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-emerald-500">
             <i data-lucide="upload-cloud" class="w-7 h-7"></i>
           </div>
-          <h3 class="text-base font-semibold text-white mb-1">Drag & Drop bank CSV statement here</h3>
-          <p class="text-xs text-slate-400 max-w-sm mb-4">Supports Chase, Bank of America, Wells Fargo, and generic banking export formats.</p>
-          <label class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-700 transition">
+          <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-1">Drag & Drop bank CSV statement here</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-4">Supports Chase, Bank of America, Wells Fargo, and generic banking export formats.</p>
+          <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition">
             Browse Files
             <input type="file" accept=".csv" onchange="handleFileSelect(event)" class="hidden" />
           </label>
         </div>
 
-        <div id="upload-result-box" class="glass-card p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hidden space-y-2">
+        <div id="upload-result-box" class="glass-card p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 hidden space-y-2">
           <h4 class="font-bold text-sm flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4"></i> Ingestion Successful</h4>
-          <p id="upload-result-msg" class="text-xs text-slate-300"></p>
+          <p id="upload-result-msg" class="text-xs text-slate-600 dark:text-slate-300"></p>
         </div>
       </section>
 
       <!-- ================= PAGE: ANALYTICS ================= -->
       <section id="page-analytics" class="space-y-6 hidden">
         <div>
-          <h1 class="text-2xl font-bold text-white tracking-tight">Spending Analytics & Recurring Subscriptions</h1>
-          <p class="text-xs text-slate-400 mt-1">Category allocations and recurring merchant interval cadences.</p>
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Spending Analytics & Recurring Subscriptions</h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Category allocations and recurring merchant interval cadences.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="glass-card p-6 rounded-2xl flex flex-col items-center">
-            <h3 class="text-sm font-semibold text-white mb-2 self-start">Expense Distribution</h3>
+            <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-2 self-start">Expense Distribution</h3>
             <div class="h-64 w-full">
               <canvas id="categoryDoughnutChart"></canvas>
             </div>
           </div>
 
           <div class="lg:col-span-2 glass-card p-6 rounded-2xl">
-            <h3 class="text-sm font-semibold text-white mb-4">Category Spend Breakdown</h3>
+            <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-4">Category Spend Breakdown</h3>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
-                <thead class="border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase">
+                <thead class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
                   <tr>
                     <th class="py-2.5 px-3">Category</th>
                     <th class="py-2.5 px-3 text-right">Total Spent</th>
@@ -318,7 +394,7 @@
                     <th class="py-2.5 px-3 text-center">Transactions</th>
                   </tr>
                 </thead>
-                <tbody id="category-table-body" class="divide-y divide-slate-800/60">
+                <tbody id="category-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60">
                   <!-- Populated -->
                 </tbody>
               </table>
@@ -330,16 +406,16 @@
         <div class="glass-card p-6 rounded-2xl">
           <div class="flex justify-between items-center mb-4">
             <div>
-              <h3 class="text-sm font-semibold text-white flex items-center gap-2">
-                <i data-lucide="refresh-cw" class="w-4 h-4 text-emerald-400"></i>
+              <h3 class="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                <i data-lucide="refresh-cw" class="w-4 h-4 text-emerald-500"></i>
                 <span>Detected Recurring Subscriptions & Cash Flows</span>
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">Algorithmically grouped by merchant frequency and interval days.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Algorithmically grouped by merchant frequency and interval days.</p>
             </div>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase">
+              <thead class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
                 <tr>
                   <th class="py-2.5 px-3">Merchant / Stream</th>
                   <th class="py-2.5 px-3">Category</th>
@@ -348,7 +424,7 @@
                   <th class="py-2.5 px-3 text-center">Frequency Alert</th>
                 </tr>
               </thead>
-              <tbody id="recurring-table-body" class="divide-y divide-slate-800/60">
+              <tbody id="recurring-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60">
                 <!-- Populated -->
               </tbody>
             </table>
@@ -360,10 +436,10 @@
       <section id="page-goals" class="space-y-6 hidden">
         <div class="flex justify-between items-center">
           <div>
-            <h1 class="text-2xl font-bold text-white tracking-tight">Savings Goals</h1>
-            <p class="text-xs text-slate-400 mt-1">Capital benchmarks, completion pacing, and monthly required funding.</p>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Savings Goals</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Capital benchmarks, completion pacing, and monthly required funding.</p>
           </div>
-          <button onclick="openAddGoalModal()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition">
+          <button onclick="openAddGoalModal()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow-sm">
             <i data-lucide="plus" class="w-4 h-4"></i> New Goal
           </button>
         </div>
@@ -377,20 +453,20 @@
       <section id="page-recommendations" class="space-y-6 hidden">
         <div class="flex justify-between items-center">
           <div>
-            <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
               <span>AI Risk Advisory & Human Approval</span>
-              <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">Human-in-the-Loop</span>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium">Human-in-the-Loop</span>
             </h1>
-            <p class="text-xs text-slate-400 mt-1">Actions require explicit confirmation before execution. All decisions enter an immutable audit trail.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Actions require explicit confirmation before execution. All decisions enter an immutable audit trail.</p>
           </div>
         </div>
 
         <!-- 2 Sub-Tabs -->
-        <div class="flex gap-6 border-b border-slate-800">
-          <button onclick="switchRecTab('active')" id="rec-tab-active" class="pb-3 text-xs font-semibold text-emerald-400 border-b-2 border-emerald-400 flex items-center gap-2">
+        <div class="flex gap-6 border-b border-slate-200 dark:border-slate-800">
+          <button onclick="switchRecTab('active')" id="rec-tab-active" class="pb-3 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-500 flex items-center gap-2">
             <i data-lucide="sparkles" class="w-4 h-4"></i> Pending Recommendations (<span id="pending-recs-count">0</span>)
           </button>
-          <button onclick="switchRecTab('audit')" id="rec-tab-audit" class="pb-3 text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-2">
+          <button onclick="switchRecTab('audit')" id="rec-tab-audit" class="pb-3 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center gap-2">
             <i data-lucide="history" class="w-4 h-4"></i> Decision Audit Log (<span id="audit-logs-count">0</span>)
           </button>
         </div>
@@ -401,7 +477,7 @@
 
         <div id="rec-pane-audit" class="glass-card rounded-2xl overflow-hidden hidden">
           <table class="w-full text-left text-xs">
-            <thead class="bg-slate-900 border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase">
+            <thead class="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase">
               <tr>
                 <th class="py-3 px-4">Timestamp</th>
                 <th class="py-3 px-4">Action Taken</th>
@@ -409,7 +485,7 @@
                 <th class="py-3 px-4">Decision Notes</th>
               </tr>
             </thead>
-            <tbody id="audit-table-body" class="divide-y divide-slate-800/60">
+            <tbody id="audit-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60">
               <!-- Populated with audit logs -->
             </tbody>
           </table>
@@ -420,54 +496,54 @@
   </div>
 
   <!-- CONFIRMATION MODAL (HUMAN-IN-THE-LOOP APPROVAL) -->
-  <div id="approval-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base">Confirm Human-in-the-Loop Decision</h3>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+  <div id="approval-modal" class="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h3 class="font-bold text-slate-900 dark:text-white text-base">Confirm Human-in-the-Loop Decision</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div>
-        <p class="text-xs text-slate-400">Target Recommendation:</p>
-        <p id="modal-rec-title" class="font-semibold text-white text-sm mt-0.5"></p>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Target Recommendation:</p>
+        <p id="modal-rec-title" class="font-semibold text-slate-900 dark:text-white text-sm mt-0.5"></p>
       </div>
       <div>
-        <p class="text-xs text-slate-400">Action to execute:</p>
-        <span id="modal-action-badge" class="inline-block mt-1 font-mono text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">ACTED_ON</span>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Action to execute:</p>
+        <span id="modal-action-badge" class="inline-block mt-1 font-mono text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">ACTED_ON</span>
       </div>
       <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">Decision Reason / Audit Notes (Optional)</label>
-        <textarea id="modal-notes" rows="2" placeholder="e.g. Canceled subscription or reduced discretionary spending..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500"></textarea>
+        <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Decision Reason / Audit Notes (Optional)</label>
+        <textarea id="modal-notes" rows="2" placeholder="e.g. Canceled subscription or adjusted budget allocation..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"></textarea>
       </div>
-      <div class="flex justify-end gap-3 pt-3 border-t border-slate-800">
-        <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white">Cancel</button>
+      <div class="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+        <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white">Cancel</button>
         <button onclick="confirmApprovalDecision()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Record & Log Decision</button>
       </div>
     </div>
   </div>
 
   <!-- ADD TRANSACTION MODAL -->
-  <div id="add-tx-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base">Add New Transaction</h3>
-        <button onclick="closeAddTxModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+  <div id="add-tx-modal" class="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h3 class="font-bold text-slate-900 dark:text-white text-base">Add New Transaction</h3>
+        <button onclick="closeAddTxModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div class="space-y-3">
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Date</label>
-          <input id="add-tx-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white" />
+          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Date</label>
+          <input id="add-tx-date" type="date" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-xs text-slate-900 dark:text-white" />
         </div>
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Description</label>
-          <input id="add-tx-desc" type="text" placeholder="e.g. Trader Joe's Groceries" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white" />
+          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
+          <input id="add-tx-desc" type="text" placeholder="e.g. Trader Joe's Groceries" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-xs text-slate-900 dark:text-white" />
         </div>
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Amount (+ for income, - for expense)</label>
-          <input id="add-tx-amount" type="number" step="0.01" placeholder="-65.50" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white" />
+          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Amount (+ for income, - for expense)</label>
+          <input id="add-tx-amount" type="number" step="0.01" placeholder="-65.50" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-xs text-slate-900 dark:text-white" />
         </div>
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Category</label>
-          <select id="add-tx-category" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
+          <select id="add-tx-category" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-xs text-slate-900 dark:text-white">
             <option value="Groceries">Groceries</option>
             <option value="Food & Dining">Food & Dining</option>
             <option value="Housing">Housing</option>
@@ -481,16 +557,49 @@
           </select>
         </div>
       </div>
-      <div class="flex justify-end gap-3 pt-3 border-t border-slate-800">
-        <button onclick="closeAddTxModal()" class="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white">Cancel</button>
+      <div class="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+        <button onclick="closeAddTxModal()" class="px-4 py-2 rounded-xl text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white">Cancel</button>
         <button onclick="submitNewTx()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Save Transaction</button>
       </div>
     </div>
   </div>
 
-  <!-- LOGIC SCRIPT (Full Client-Side State, Algorithms, Charts, & Storage) -->
+  <!-- JAVASCRIPT STATE, THEME TOGGLING & ALGORITHMS -->
   <script>
-    // Initial 6-month sample dataset matching requirement
+    // Theme Management: Light Mode as Default
+    let currentTheme = localStorage.getItem('aegis_theme') || 'light';
+
+    function applyTheme(theme) {
+      currentTheme = theme;
+      localStorage.setItem('aegis_theme', theme);
+      const htmlEl = document.documentElement;
+      const themeIcon = document.getElementById('theme-icon');
+      const themeText = document.getElementById('theme-text');
+
+      if (theme === 'dark') {
+        htmlEl.classList.remove('light');
+        htmlEl.classList.add('dark');
+        if (themeIcon) themeIcon.setAttribute('data-lucide', 'sun');
+        if (themeText) themeText.textContent = 'Light Mode';
+      } else {
+        htmlEl.classList.remove('dark');
+        htmlEl.classList.add('light');
+        if (themeIcon) themeIcon.setAttribute('data-lucide', 'moon');
+        if (themeText) themeText.textContent = 'Dark Mode';
+      }
+      lucide.createIcons();
+
+      // Refresh charts with theme-appropriate colors
+      if (typeof renderDashboard === 'function') {
+        renderDashboard();
+      }
+    }
+
+    function toggleTheme() {
+      applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+    }
+
+    // Default 6-month sample dataset
     const DEFAULT_TRANSACTIONS = [
       { id: 1, date: "2026-04-01", description: "Acme Corp Payroll Direct Deposit", merchant: "Acme Corp", amount: 3200.00, category: "Income" },
       { id: 2, date: "2026-04-01", description: "Oakwood Property Management Rent", merchant: "Oakwood Property", amount: -1500.00, category: "Housing" },
@@ -594,13 +703,13 @@
       document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
       document.getElementById('page-' + tabId).classList.remove('hidden');
       document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
-        btn.classList.add('text-slate-400');
+        btn.classList.remove('bg-emerald-500/10', 'text-emerald-600', 'dark:text-emerald-400', 'border', 'border-emerald-500/20', 'font-semibold');
+        btn.classList.add('text-slate-600', 'dark:text-slate-400', 'font-medium');
       });
       const activeBtn = document.getElementById('nav-' + tabId);
       if (activeBtn) {
-        activeBtn.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
-        activeBtn.classList.remove('text-slate-400');
+        activeBtn.classList.add('bg-emerald-500/10', 'text-emerald-600', 'dark:text-emerald-400', 'border', 'border-emerald-500/20', 'font-semibold');
+        activeBtn.classList.remove('text-slate-600', 'dark:text-slate-400', 'font-medium');
       }
       lucide.createIcons();
       if (tabId === 'dashboard') renderDashboard();
@@ -654,17 +763,17 @@
         anomListEl.innerHTML = '<p class="text-xs text-slate-400 py-4 text-center">No anomalies detected.</p>';
       } else {
         anomListEl.innerHTML = anoms.slice(0, 3).map(a => `
-          <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-xs">
-            <div class="flex justify-between font-semibold text-slate-200">
+          <div class="p-3 sub-card rounded-xl text-xs">
+            <div class="flex justify-between font-semibold text-slate-800 dark:text-slate-200">
               <span class="truncate max-w-[150px]">${a.merchant || a.description}</span>
-              <span class="text-rose-400 font-mono">$${Math.abs(a.amount).toFixed(2)}</span>
+              <span class="text-rose-500 font-mono">$${Math.abs(a.amount).toFixed(2)}</span>
             </div>
-            <p class="text-[11px] text-amber-400/90 mt-1">${a.anomaly_reason}</p>
+            <p class="text-[11px] text-amber-600 dark:text-amber-400/90 mt-1">${a.anomaly_reason}</p>
           </div>
         `).join('');
       }
 
-      // 30-Day Forecast Chart
+      // Charts
       renderForecastChart(netFlow);
       renderMoMChart();
       lucide.createIcons();
@@ -674,22 +783,21 @@
       const ctx = document.getElementById('forecastChart').getContext('2d');
       if (forecastChartInstance) forecastChartInstance.destroy();
 
+      const isDark = currentTheme === 'dark';
+      const gridColor = isDark ? '#1e293b' : '#f1f5f9';
+      const tickColor = isDark ? '#64748b' : '#94a3b8';
+
       const labels = [];
       const values = [];
-      const uppers = [];
-      const lowers = [];
       let running = Math.max(currentBalance, 2500);
 
       for (let i = 1; i <= 30; i++) {
         labels.push(`Day ${i}`);
-        // Base moving average burn + occasional pay deposit
         let netDay = -38;
-        if (i === 1 || i === 15) netDay += 1600; // paycheck
-        if (i === 1) netDay -= 1500; // rent
+        if (i === 1 || i === 15) netDay += 1600;
+        if (i === 1) netDay -= 1500;
         running += netDay;
         values.push(running);
-        uppers.push(running + (15 * Math.sqrt(i)));
-        lowers.push(running - (15 * Math.sqrt(i)));
       }
 
       document.getElementById('forecast-end-val').textContent = `$${running.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
@@ -703,7 +811,7 @@
               label: 'Projected Balance',
               data: values,
               borderColor: '#10b981',
-              backgroundColor: 'rgba(16, 185, 129, 0.15)',
+              backgroundColor: isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.12)',
               fill: true,
               tension: 0.3
             }
@@ -714,8 +822,8 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
           scales: {
-            x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { size: 10 } } },
-            y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { size: 10 } } }
+            x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } } },
+            y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 10 } } }
           }
         }
       });
@@ -724,6 +832,10 @@
     function renderMoMChart() {
       const ctx = document.getElementById('momChart').getContext('2d');
       if (momChartInstance) momChartInstance.destroy();
+
+      const isDark = currentTheme === 'dark';
+      const gridColor = isDark ? '#1e293b' : '#f1f5f9';
+      const tickColor = isDark ? '#64748b' : '#94a3b8';
 
       momChartInstance = new Chart(ctx, {
         type: 'bar',
@@ -737,10 +849,10 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
+          plugins: { legend: { labels: { color: tickColor, font: { size: 11 } } } },
           scales: {
-            x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } },
-            y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } }
+            x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+            y: { grid: { color: gridColor }, ticks: { color: tickColor } }
           }
         }
       });
@@ -766,28 +878,28 @@
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-500">No matching transactions.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-400">No matching transactions.</td></tr>';
         return;
       }
 
       tbody.innerHTML = filtered.map(t => `
-        <tr class="hover:bg-slate-800/30 transition">
-          <td class="py-3 px-4 font-mono text-slate-400 whitespace-nowrap">${t.date}</td>
-          <td class="py-3 px-4 font-medium text-white">${t.description}</td>
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition">
+          <td class="py-3 px-4 font-mono text-slate-500 dark:text-slate-400 whitespace-nowrap">${t.date}</td>
+          <td class="py-3 px-4 font-medium text-slate-800 dark:text-white">${t.description}</td>
           <td class="py-3 px-4">
-            <span class="px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 text-[11px]">${t.category}</span>
+            <span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-[11px]">${t.category}</span>
           </td>
-          <td class="py-3 px-4 text-right font-semibold font-mono ${t.amount > 0 ? 'text-emerald-400' : 'text-slate-200'}">
+          <td class="py-3 px-4 text-right font-semibold font-mono ${t.amount > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-800 dark:text-slate-200'}">
             ${t.amount > 0 ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}
           </td>
           <td class="py-3 px-4 text-center">
             ${t.is_anomaly ? `
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-semibold" title="${t.anomaly_reason}">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-semibold" title="${t.anomaly_reason}">
                 <i data-lucide="alert-triangle" class="w-3 h-3"></i> Outlier
-              </span>` : '<span class="text-slate-500 text-[11px]">Normal</span>'}
+              </span>` : '<span class="text-slate-400 dark:text-slate-500 text-[11px]">Normal</span>'}
           </td>
           <td class="py-3 px-4 text-right">
-            <button onclick="deleteTx(${t.id})" class="text-slate-500 hover:text-rose-400 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            <button onclick="deleteTx(${t.id})" class="text-slate-400 hover:text-rose-500 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
           </td>
         </tr>
       `).join('');
@@ -798,9 +910,9 @@
       currentAnomalyFilter = !currentAnomalyFilter;
       const btn = document.getElementById('tx-anomaly-filter-btn');
       if (currentAnomalyFilter) {
-        btn.classList.add('bg-amber-500/20', 'text-amber-300', 'border-amber-500/40');
+        btn.classList.add('bg-amber-500/20', 'text-amber-600', 'dark:text-amber-300', 'border-amber-500/40');
       } else {
-        btn.classList.remove('bg-amber-500/20', 'text-amber-300', 'border-amber-500/40');
+        btn.classList.remove('bg-amber-500/20', 'text-amber-600', 'dark:text-amber-300', 'border-amber-500/40');
       }
       renderTransactions();
     }
@@ -845,14 +957,14 @@
         const val = catTotals[cat];
         const pct = totalOutflow > 0 ? ((val / totalOutflow) * 100).toFixed(1) : 0;
         return `
-          <tr class="hover:bg-slate-800/20">
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20">
             <td class="py-2.5 px-3 flex items-center gap-2">
               <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${colors[i % colors.length]}"></span>
-              <span class="font-medium text-slate-200">${cat}</span>
+              <span class="font-medium text-slate-800 dark:text-slate-200">${cat}</span>
             </td>
-            <td class="py-2.5 px-3 text-right font-semibold font-mono text-white">$${val.toFixed(2)}</td>
-            <td class="py-2.5 px-3 text-right font-mono text-slate-400">${pct}%</td>
-            <td class="py-2.5 px-3 text-center text-slate-400">${transactions.filter(t => t.category === cat).length}</td>
+            <td class="py-2.5 px-3 text-right font-semibold font-mono text-slate-900 dark:text-white">$${val.toFixed(2)}</td>
+            <td class="py-2.5 px-3 text-right font-mono text-slate-500 dark:text-slate-400">${pct}%</td>
+            <td class="py-2.5 px-3 text-center text-slate-500 dark:text-slate-400">${transactions.filter(t => t.category === cat).length}</td>
           </tr>
         `;
       }).join('');
@@ -860,33 +972,33 @@
       // Recurring Patterns table
       const recTableBody = document.getElementById('recurring-table-body');
       recTableBody.innerHTML = `
-        <tr class="hover:bg-slate-800/20">
-          <td class="py-2.5 px-3 font-semibold text-white">Acme Corp Direct Deposit</td>
-          <td class="py-2.5 px-3 text-slate-400">Income</td>
-          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-800 text-emerald-400 border border-emerald-500/20 text-[10px]">Biweekly</span></td>
-          <td class="py-2.5 px-3 text-right font-semibold font-mono text-emerald-400">+$3,200.00</td>
-          <td class="py-2.5 px-3 text-center text-slate-400 font-mono">1st & 15th</td>
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20">
+          <td class="py-2.5 px-3 font-semibold text-slate-900 dark:text-white">Acme Corp Direct Deposit</td>
+          <td class="py-2.5 px-3 text-slate-500 dark:text-slate-400">Income</td>
+          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px]">Biweekly</span></td>
+          <td class="py-2.5 px-3 text-right font-semibold font-mono text-emerald-600 dark:text-emerald-400">+$3,200.00</td>
+          <td class="py-2.5 px-3 text-center text-slate-500 dark:text-slate-400 font-mono">1st & 15th</td>
         </tr>
-        <tr class="hover:bg-slate-800/20">
-          <td class="py-2.5 px-3 font-semibold text-white">Oakwood Property Management</td>
-          <td class="py-2.5 px-3 text-slate-400">Housing</td>
-          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">Monthly</span></td>
-          <td class="py-2.5 px-3 text-right font-semibold font-mono text-white">-$1,500.00</td>
-          <td class="py-2.5 px-3 text-center text-slate-400 font-mono">1st of Month</td>
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20">
+          <td class="py-2.5 px-3 font-semibold text-slate-900 dark:text-white">Oakwood Property Management</td>
+          <td class="py-2.5 px-3 text-slate-500 dark:text-slate-400">Housing</td>
+          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 text-[10px]">Monthly</span></td>
+          <td class="py-2.5 px-3 text-right font-semibold font-mono text-slate-900 dark:text-white">-$1,500.00</td>
+          <td class="py-2.5 px-3 text-center text-slate-500 dark:text-slate-400 font-mono">1st of Month</td>
         </tr>
-        <tr class="hover:bg-slate-800/20">
-          <td class="py-2.5 px-3 font-semibold text-white">Netflix Subscription</td>
-          <td class="py-2.5 px-3 text-slate-400">Entertainment</td>
-          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">Monthly</span></td>
-          <td class="py-2.5 px-3 text-right font-semibold font-mono text-white">-$19.99</td>
-          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold">+25% Hike Flagged</span></td>
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20">
+          <td class="py-2.5 px-3 font-semibold text-slate-900 dark:text-white">Netflix Subscription</td>
+          <td class="py-2.5 px-3 text-slate-500 dark:text-slate-400">Entertainment</td>
+          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 text-[10px]">Monthly</span></td>
+          <td class="py-2.5 px-3 text-right font-semibold font-mono text-slate-900 dark:text-white">-$19.99</td>
+          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-bold">+25% Hike Flagged</span></td>
         </tr>
-        <tr class="hover:bg-slate-800/20">
-          <td class="py-2.5 px-3 font-semibold text-white">Comcast Xfinity Internet</td>
-          <td class="py-2.5 px-3 text-slate-400">Utilities</td>
-          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">Monthly</span></td>
-          <td class="py-2.5 px-3 text-right font-semibold font-mono text-white">-$79.99</td>
-          <td class="py-2.5 px-3 text-center text-slate-400 font-mono">25th of Month</td>
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20">
+          <td class="py-2.5 px-3 font-semibold text-slate-900 dark:text-white">Comcast Xfinity Internet</td>
+          <td class="py-2.5 px-3 text-slate-500 dark:text-slate-400">Utilities</td>
+          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 text-[10px]">Monthly</span></td>
+          <td class="py-2.5 px-3 text-right font-semibold font-mono text-slate-900 dark:text-white">-$79.99</td>
+          <td class="py-2.5 px-3 text-center text-slate-500 dark:text-slate-400 font-mono">25th of Month</td>
         </tr>
       `;
     }
@@ -901,24 +1013,24 @@
           <div class="glass-card p-6 rounded-2xl flex flex-col justify-between space-y-4">
             <div>
               <div class="flex justify-between items-center mb-2">
-                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">${g.category}</span>
-                <span class="text-xs text-slate-400">${g.date}</span>
+                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${g.category}</span>
+                <span class="text-xs text-slate-500 dark:text-slate-400">${g.date}</span>
               </div>
-              <h3 class="font-bold text-white text-base">${g.name}</h3>
+              <h3 class="font-bold text-slate-900 dark:text-white text-base">${g.name}</h3>
               <div class="mt-3 flex justify-between items-baseline font-mono">
-                <span class="text-2xl font-bold text-white">$${g.current.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                <span class="text-xs text-slate-400">/ $${g.target.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span class="text-2xl font-bold text-slate-900 dark:text-white">$${g.current.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span class="text-xs text-slate-500 dark:text-slate-400">/ $${g.target.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
               </div>
-              <div class="mt-2 w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div class="mt-2 w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
                 <div class="h-full bg-emerald-500 rounded-full" style="width: ${pct}%"></div>
               </div>
-              <div class="mt-2 flex justify-between text-xs text-slate-400">
+              <div class="mt-2 flex justify-between text-xs text-slate-500 dark:text-slate-400">
                 <span>${pct}% Funded</span>
                 <span>$${rem} remaining</span>
               </div>
             </div>
-            <button onclick="contributeToGoal(${g.id})" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-xl text-xs font-semibold border border-slate-700 flex items-center justify-center gap-1.5 transition">
-              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-emerald-400"></i> Add $100 Contribution
+            <button onclick="contributeToGoal(${g.id})" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 py-2 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700 flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-emerald-500"></i> Add $100 Contribution
             </button>
           </div>
         `;
@@ -942,28 +1054,28 @@
 
       const paneActive = document.getElementById('rec-pane-active');
       if (pending.length === 0) {
-        paneActive.innerHTML = '<div class="glass-card p-12 text-center rounded-2xl"><h3 class="font-bold text-white">All Clear! No Pending Actions.</h3></div>';
+        paneActive.innerHTML = '<div class="glass-card p-12 text-center rounded-2xl"><h3 class="font-bold text-slate-800 dark:text-white">All Clear! No Pending Actions.</h3></div>';
       } else {
         paneActive.innerHTML = pending.map(r => `
           <div class="glass-card p-6 rounded-2xl space-y-4">
             <div class="flex justify-between items-center">
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">${r.severity} Priority</span>
-              ${r.savings > 0 ? `<span class="text-xs font-semibold text-emerald-400 font-mono">Est. Savings: +$${r.savings.toFixed(2)}/mo</span>` : ''}
+              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">${r.severity} Priority</span>
+              ${r.savings > 0 ? `<span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 font-mono">Est. Savings: +$${r.savings.toFixed(2)}/mo</span>` : ''}
             </div>
             <div>
-              <h3 class="font-bold text-white text-base">${r.title}</h3>
-              <p class="text-xs text-slate-300 mt-1">${r.description}</p>
+              <h3 class="font-bold text-slate-900 dark:text-white text-base">${r.title}</h3>
+              <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">${r.description}</p>
             </div>
-            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 text-xs text-slate-300">
-              <span class="font-semibold text-emerald-400 text-[11px] block mb-1">AI Rationale:</span>
+            <div class="p-3.5 sub-card rounded-xl text-xs text-slate-700 dark:text-slate-300">
+              <span class="font-semibold text-emerald-600 dark:text-emerald-400 text-[11px] block mb-1">AI Rationale:</span>
               ${r.explanation}
             </div>
-            <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
-              <span class="text-[11px] text-slate-500 italic">Requires user confirmation</span>
+            <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
+              <span class="text-[11px] text-slate-400 italic">Requires user confirmation</span>
               <div class="flex gap-2">
-                <button onclick="promptAction(${r.id}, 'DISMISSED')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700">Dismiss</button>
-                <button onclick="promptAction(${r.id}, 'APPROVED')" class="px-3 py-1.5 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 text-xs border border-blue-500/40">Approve</button>
-                <button onclick="promptAction(${r.id}, 'ACTED_ON')" class="px-4 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/20">Confirm Acted On</button>
+                <button onclick="promptAction(${r.id}, 'DISMISSED')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">Dismiss</button>
+                <button onclick="promptAction(${r.id}, 'APPROVED')" class="px-3 py-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 text-xs border border-blue-500/30">Approve</button>
+                <button onclick="promptAction(${r.id}, 'ACTED_ON')" class="px-4 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs shadow-sm">Confirm Acted On</button>
               </div>
             </div>
           </div>
@@ -973,11 +1085,11 @@
       // Audit Log
       const tbody = document.getElementById('audit-table-body');
       tbody.innerHTML = auditLogs.map(l => `
-        <tr class="hover:bg-slate-800/20">
-          <td class="py-3 px-4 font-mono text-slate-400 whitespace-nowrap">${l.timestamp}</td>
-          <td class="py-3 px-4 font-mono font-bold ${l.action === 'ACTED_ON' ? 'text-emerald-400' : 'text-blue-400'}">${l.action}</td>
-          <td class="py-3 px-4 font-medium text-white">${l.rec_title}</td>
-          <td class="py-3 px-4 text-slate-400">${l.notes}</td>
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/20">
+          <td class="py-3 px-4 font-mono text-slate-500 dark:text-slate-400 whitespace-nowrap">${l.timestamp}</td>
+          <td class="py-3 px-4 font-mono font-bold ${l.action === 'ACTED_ON' ? 'text-emerald-600 dark:text-emerald-400' : 'text-blue-600 dark:text-blue-400'}">${l.action}</td>
+          <td class="py-3 px-4 font-medium text-slate-800 dark:text-white">${l.rec_title}</td>
+          <td class="py-3 px-4 text-slate-500 dark:text-slate-400">${l.notes}</td>
         </tr>
       `).join('');
       lucide.createIcons();
@@ -987,13 +1099,13 @@
       if (tab === 'active') {
         document.getElementById('rec-pane-active').classList.remove('hidden');
         document.getElementById('rec-pane-audit').classList.add('hidden');
-        document.getElementById('rec-tab-active').className = "pb-3 text-xs font-semibold text-emerald-400 border-b-2 border-emerald-400 flex items-center gap-2";
-        document.getElementById('rec-tab-audit').className = "pb-3 text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-2";
+        document.getElementById('rec-tab-active').className = "pb-3 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-500 flex items-center gap-2";
+        document.getElementById('rec-tab-audit').className = "pb-3 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center gap-2";
       } else {
         document.getElementById('rec-pane-active').classList.add('hidden');
         document.getElementById('rec-pane-audit').classList.remove('hidden');
-        document.getElementById('rec-tab-active').className = "pb-3 text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-2";
-        document.getElementById('rec-tab-audit').className = "pb-3 text-xs font-semibold text-emerald-400 border-b-2 border-emerald-400 flex items-center gap-2";
+        document.getElementById('rec-tab-active').className = "pb-3 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center gap-2";
+        document.getElementById('rec-tab-audit').className = "pb-3 text-xs font-semibold text-emerald-600 dark:text-emerald-400 border-b-2 border-emerald-500 flex items-center gap-2";
       }
       lucide.createIcons();
     }
@@ -1125,8 +1237,9 @@
       localStorage.setItem('aegis_txs', JSON.stringify(transactions));
     }
 
-    // Initialize application on load
+    // Initialize application on load with Light Mode as Default
     window.addEventListener('DOMContentLoaded', () => {
+      applyTheme(currentTheme);
       lucide.createIcons();
       renderDashboard();
     });
