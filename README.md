@@ -195,3 +195,5 @@ To enable offline AI explanations using Ollama:
 
 ## 📄 License
 This project is open-source software licensed under the [MIT License](LICENSE).
+#   N e x B u i l d  
+ 
