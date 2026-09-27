@@ -1,192 +1,175 @@
 # 🛡️ AegisFinance: AI-Powered Personal Finance & Financial Risk Agent
 
-A complete, production-grade, self-hosted web application for personal cash flow telemetry, statistical anomaly detection, cash flow forecasting, and financial risk grading. Built with **100% free and open-source tools** — requires **zero paid API keys** and **no third-party auth services**.
+<p align="center">
+  <a href="https://github.com/Prakharcz/NexBuild/actions"><img src="https://github.com/Prakharcz/NexBuild/actions/workflows/ci.yml/badge.svg" alt="CI Pipeline"></a>
+  <a href="https://github.com/Prakharcz/NexBuild/stargazers"><img src="https://img.shields.io/github/stars/Prakharcz/NexBuild?style=flat-square&color=emerald" alt="Stars"></a>
+  <a href="https://github.com/Prakharcz/NexBuild/network/members"><img src="https://img.shields.io/github/forks/Prakharcz/NexBuild?style=flat-square" alt="Forks"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-10b981.svg?style=flat-square" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/Python-3.11+-blue.svg?style=flat-square" alt="Python 3.11+">
+  <img src="https://img.shields.io/badge/FastAPI-0.110+-009688.svg?style=flat-square" alt="FastAPI">
+  <img src="https://img.shields.io/badge/React-18-61dafb.svg?style=flat-square" alt="React 18">
+  <img src="https://img.shields.io/badge/Docker-Compose-2496ed.svg?style=flat-square" alt="Docker">
+  <img src="https://img.shields.io/badge/API%20Costs-$0.00-brightgreen.svg?style=flat-square" alt="Zero Cost">
+</p>
+
+<p align="center">
+  <b>A self-hosted, full-stack intelligence agent for liquidity telemetry, statistical spending anomaly detection, cash flow projections, and autonomous risk scoring.</b><br>
+  <i>100% Free & Open-Source • Zero Paid APIs • Self-Contained JWT Auth • Runs on Any Machine</i>
+</p>
 
 ---
 
-## 📸 Key Features
+## 📑 Table of Contents
 
-1. **Flexible CSV Statement Ingestion**: Auto-detects and parses banking exports from Chase, Bank of America, Wells Fargo, Citi, or custom spreadsheets with support for multiple date and currency formats.
-2. **Deterministic Rule-Based Categorization**: High-speed keyword mapping across 10 major spending categories with fallback to "Uncategorized" and inline user override.
-3. **Recurring Obligation Detection**: Identifies recurring subscriptions, utility bills, and paychecks by analyzing interval cadences (weekly, biweekly, monthly) and flags silent price hikes (e.g., Netflix subscription jumping 25%).
-4. **Statistical Anomaly Detection**: Category-aware **Interquartile Range (IQR)** and **Z-score** ($|z| \ge 2.5$) outlier detection to highlight unexpected expense spikes.
-5. **Cash Flow & Balance Forecasting**: 30-to-60-day moving average cash burn projections anchored with scheduled recurring obligations and statistical confidence bands ($\pm 1.96 \sigma \sqrt{t}$).
-6. **Financial Risk Score Engine (0–100)**: Evaluates emergency runway buffer (months of essential living expenses), spending volatility ($CV = \frac{\sigma}{\mu}$), and net savings rate into an actionable risk classification.
-7. **Savings Goals Tracking**: Real-time progress bars, completion timelines, and required monthly contributions.
-8. **AI Risk Advisory**: Connects to a local **Ollama** LLM (e.g. `llama3.2`) for personalized advice, with an automatic, graceful fallback to rich template-based explanations when Ollama is offline.
-9. **Human-Approval Workflow & Audit Trail**: Recommendations strictly require explicit user confirmation before being marked as acted on or dismissed; all decisions are permanently preserved in an immutable database audit log.
-
----
-
-## 🏛️ System Architecture
-
-```mermaid
-graph TD
-    User([User Browser]) <--> |HTTP / JSON / JWT| Frontend[React Vite SPA + Recharts]
-    Frontend <--> |Nginx Reverse Proxy / API| Backend[FastAPI Backend Application]
-    Backend <--> |SQLAlchemy 2.0| Postgres[(PostgreSQL 16 DB)]
-    Backend <--> |Cache / Queues| Redis[(Redis 7)]
-    Backend -.-> |Optional Local Inference| Ollama[Local Ollama LLM / Template Fallback]
-```
+- [🎮 Live Interactive Demo](#-live-interactive-demo)
+- [✨ Key Features](#-key-features)
+- [🎨 Theme Color Palettes](#-theme-color-palettes)
+- [📊 4 Built-In Scenario Presets](#-4-built-in-scenario-presets)
+- [⚡ 3 Ways to Run (Any System)](#-3-ways-to-run-any-system)
+  - [Option 1: Instant Zero-Install Web App](#option-1-instant-zero-install-web-app-recommended)
+  - [Option 2: Docker Compose Full Stack](#option-2-docker-compose-full-stack)
+  - [Option 3: Local Bare-Metal (Python + Node.js)](#option-3-local-bare-metal-python--nodejs)
+- [🏛️ System Architecture](#-system-architecture)
+- [🧪 Automated Testing](#-automated-testing)
+- [🚀 Pushing to GitHub (Bypass 100-File Limit)](#-pushing-to-github-bypass-100-file-limit)
+- [🔒 Security & Privacy](#-security--privacy)
+- [📄 License](#-license)
 
 ---
 
-## 🚀 Quickstart in 3 Minutes (Docker Compose)
+## 🎮 Live Interactive Demo
 
-### Prerequisites
-- [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/) installed on your machine.
-- Git.
+> **No installation needed!** Run AegisFinance in under 2 seconds:
 
-### 1. Clone & Setup Environment
+| Platform | How to Launch | Action |
+| :--- | :--- | :--- |
+| **Online Web (GitHub Pages)** | Runs directly from GitHub | [👉 Launch Live Web App](https://prakharcz.github.io/NexBuild/) |
+| **Windows** | Double-click `run_app.bat` or `index.html` | Opens in Default Browser |
+| **macOS / Linux** | Run `./run_app.sh` or open `index.html` | Opens in Default Browser |
+
+---
+
+## ✨ Key Features
+
+<details open>
+<summary><b>🔍 1. Flexible CSV Statement Ingestion & Categorization</b></summary>
+<br>
+
+- Multi-format dialect detection supporting **Chase, Bank of America, Wells Fargo, Citi, Apple Card**, and custom spreadsheets.
+- Rule-based keyword matching across **10 spending categories** (*Housing, Groceries, Dining, Utilities, Healthcare, Entertainment, Shopping, Income, Transportation, Uncategorized*).
+- Inline category re-assignment with instant database sync.
+
+</details>
+
+<details>
+<summary><b>🔁 2. Recurring Charge & Price Hike Detection</b></summary>
+<br>
+
+- Cadence interval grouping algorithm detecting weekly, biweekly, and monthly recurring charges.
+- **Silent Price Hike Sentry**: Flags when subscription costs creep up (e.g., Netflix jumping from $15.99 to $19.99, Gym rates rising $45 &rarr; $59).
+- Surfaces reclaimable subscription cash with 1-click action recommendations.
+
+</details>
+
+<details>
+<summary><b>🚨 3. Statistical Anomaly & Outlier Engine (IQR + Z-Score)</b></summary>
+<br>
+
+- Category-segmented **Interquartile Range (IQR)**: flags charges exceeding $Q_3 + 1.5 \times \text{IQR}$.
+- **Z-Score Calculation**: flags extreme statistical spikes where $|z| \ge 2.5\sigma$.
+- Excludes income deposits to prevent positive paychecks from triggering expense alerts.
+
+</details>
+
+<details>
+<summary><b>📈 4. Cash Flow & Moving Average Balance Forecaster</b></summary>
+<br>
+
+- 30 to 60-day predictive moving-average daily balance projections.
+- Injects known scheduled recurring paychecks and bills into future timeline.
+- Dynamically calculates upper and lower **95% confidence intervals** ($\pm 1.96 \sigma \sqrt{t}$).
+
+</details>
+
+<details>
+<summary><b>🛡️ 5. Financial Risk Score Engine (0–100)</b></summary>
+<br>
+
+- Composite scoring evaluating:
+  - **Liquidity Runway Buffer**: Months of essential obligations covered by current reserves.
+  - **Spending Volatility**: Coefficient of variation ($CV = \frac{\sigma}{\mu}$).
+  - **Net Savings Margin**: Percentage of net income preserved monthly.
+- Renders an interactive SVG gauge with real-time risk grading (*Low Risk*, *Moderate Risk*, *High Risk Alert*).
+
+</details>
+
+<details>
+<summary><b>🎯 6. Savings Goals & Runway Milestones</b></summary>
+<br>
+
+- Interactive goal builder with category milestones (*Emergency Buffer, Home Down Payment, Travel, Vehicle, Wealth*).
+- Dynamic funding bars, remaining balance computation, and quick contribution buttons (`+$50`, `+$100`).
+- Full persistent CRUD saved directly to `localStorage` or PostgreSQL.
+
+</details>
+
+<details>
+<summary><b>⚖️ 7. Human-in-the-Loop Decision Approvals & Immutable Audit Log</b></summary>
+<br>
+
+- AI recommendations are strictly advisory — actions require **explicit user confirmation** via modal approval.
+- Every decision (*APPROVED, REJECTED, ACTED_ON*) is cryptographically timestamped and stored in an immutable audit ledger.
+
+</details>
+
+---
+
+## 🎨 Theme Color Palettes
+
+Customize the UI to match your aesthetic with the integrated **Palette Selector** in the top navigation bar:
+
+| Swatch | Palette Name | Primary Hex | Highlight Role |
+| :---: | :--- | :---: | :--- |
+| 🌿 | **Emerald Green** *(Default)* | `#10b981` | Classic fintech, growth, prosperity |
+| 🔷 | **Sapphire Blue** | `#2563eb` | Corporate neobanking & institutional trust |
+| 🔮 | **Electric Violet** | `#8b5cf6` | High-tech AI agent aesthetic |
+| 🌅 | **Sunset Amber** | `#f59e0b` | High contrast & energetic gold |
+| 🌹 | **Ruby Rose** | `#f43f5e` | Bold crimson & premium ruby |
+| 🌊 | **Cyber Teal** | `#06b6d4` | Clean Scandinavian cyan tone |
+| 🍇 | **Deep Indigo** | `#6366f1` | Modern developer SaaS midnight tone |
+| 🪙 | **Obsidian Slate** | `#475569` | Executive minimalist monochrome |
+| 🎨 | **Custom Hex Picker** | *User Defined* | Pick ANY color from native OS color wheel |
+
+> *Theme palettes instantly re-color active navigation tabs, buttons, gradient badges, Risk Gauge meters, and Chart.js forecast strokes. Preferences persist in `localStorage` across visits.*
+
+---
+
+## 📊 4 Built-In Scenario Presets
+
+Easily test and preview all platform capabilities using the **Scenario Selector** dropdown in the top navbar or via the Upload view:
+
+| Scenario Preset | Financial Focus | Profile Highlights |
+| :--- | :--- | :--- |
+| **1. Stable Saver** | Low Risk & Forecasting | • 58% savings rate, 8.5 months runway, steady wealth growth.<br>• **Score: 92/100 (Low Risk)**. |
+| **2. Subscription Creep** | Cadence & Price Hikes | • 8 recurring services detected.<br>• Price hikes: Netflix (+25%), Gym (+31%), NYTimes (+525%).<br>• Identifies **$188/mo** in reclaimable cash. |
+| **3. Volatile Outliers** | IQR & Z-Score Anomalies | • Auto-flags extreme charges: $2,450 Dental, $1,850 Auto repair, $1,120 Splurge.<br>• Triggers volatility warnings. |
+| **4. Liquidity Crunch** | High-Risk Alert & Action | • 0.4 months runway, high food delivery burn rate.<br>• Predicts overdraft in 22 days.<br>• **Score: 32/100 (High Risk Alert)**. |
+
+---
+
+## ⚡ 3 Ways to Run (Any System)
+
+### Option 1: Instant Zero-Install Web App (Recommended)
+
+Run the complete web application with zero dependencies (no Docker, Node, or Python needed):
+
 ```bash
-git clone https://github.com/your-username/finance-risk-agent.git
-cd finance-risk-agent
-cp .env.example .env
-```
-
-### 2. Launch Stack with One Command
-```bash
-docker-compose up --build
-```
-
-That's it! Docker spins up:
-- **Frontend SPA**: [http://localhost:3000](http://localhost:3000)
-- **FastAPI Backend**: [http://localhost:8000](http://localhost:8000)
-- **Interactive OpenAPI Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **PostgreSQL Database**: Port `5432`
-- **Redis Cache**: Port `6379`
-
-### 3. Log In with Pre-Seeded Demo Data
-The application automatically seeds a realistic 6-month financial history on initial startup:
-- **Email**: `demo@example.com`
-- **Password**: `password123`
-
-*(You can also click the **"Load Demo Account Credentials"** button on the login screen).*
-
----
-
-## 💻 Local Development (Without Docker)
-
-You can run the entire application directly on your local machine using SQLite:
-
-### Backend Setup
-```bash
-cd backend
-python -m venv venv
+# Clone the repository
+git clone https://github.com/Prakharcz/NexBuild.git
+cd NexBuild
 
 # Windows:
-.\venv\Scripts\activate
-# Linux/macOS:
-source venv/bin/activate
+run_app.bat
 
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
-> The backend automatically creates an SQLite database `finance.db` and loads the sample dataset if no database URL is set.
-
-### Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) (or `http://localhost:5173`).
-
----
-
-## 🧪 Running Automated Tests
-
-The test suite covers categorization, recurring subscription detection, IQR anomaly detection, cash flow forecasting, and financial risk score calculation:
-
-```bash
-cd backend
-pytest tests/ -v
-```
-
-Output:
-```text
-tests/test_anomaly.py::test_detect_statistical_outlier PASSED
-tests/test_anomaly.py::test_anomaly_ignores_income_inflows PASSED
-tests/test_categorization.py::test_categorize_common_merchants PASSED
-tests/test_categorization.py::test_categorize_income PASSED
-tests/test_categorization.py::test_categorize_fallback_uncategorized PASSED
-tests/test_categorization.py::test_merchant_extraction_cleans_noise PASSED
-tests/test_forecasting.py::test_forecast_empty_transactions PASSED
-tests/test_forecasting.py::test_forecast_projection_length_and_bounds PASSED
-tests/test_forecasting.py::test_forecast_with_recurring_obligations PASSED
-tests/test_recurring.py::test_detect_monthly_recurring_and_price_spike PASSED
-tests/test_risk.py::test_risk_score_healthy_finances PASSED
-tests/test_risk.py::test_risk_score_vulnerable_finances PASSED
-```
-
----
-
-## 📂 Project Structure
-
-```
-finance-risk-agent/
-├── .github/
-│   └── workflows/
-│       └── ci.yml                # GitHub Actions: test and lint backend & frontend
-├── backend/
-│   ├── alembic/                  # Database schema migrations
-│   ├── app/
-│   │   ├── api/                  # FastAPI routers (auth, ingestion, analytics, etc.)
-│   │   ├── core/                 # Config, database session, JWT security
-│   │   ├── db/                   # Table initialization & realistic seed data
-│   │   ├── models/               # SQLAlchemy ORM models
-│   │   ├── schemas/              # Pydantic v2 schemas
-│   │   ├── services/             # Core engines: categorizer, anomaly, forecast, risk, LLM
-│   │   └── main.py               # FastAPI application entrypoint & CORS
-│   ├── tests/                    # Pytest automated test suite
-│   ├── Dockerfile
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── components/           # Reusable UI widgets: StatCard, RiskGauge, Modal, Navbar
-│   │   ├── context/              # Authentication context provider
-│   │   ├── pages/                # Dashboard, Transactions, Upload, Analytics, Goals, Recommendations
-│   │   ├── services/             # Axios API client wrapper
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── Dockerfile
-│   ├── nginx.conf
-│   └── package.json
-├── sample_data/
-│   └── transactions_sample.csv   # 6-month realistic statement to test upload & detection
-├── .env.example                  # Environment configuration template
-├── docker-compose.yml            # Multi-container orchestration (Postgres, Redis, Backend, Frontend)
-└── README.md
-```
-
----
-
-## 🧠 Optional Local LLM (Ollama)
-
-To enable offline AI explanations using Ollama:
-1. Install [Ollama](https://ollama.ai/) on your host machine.
-2. Pull your model of choice:
-   ```bash
-   ollama pull llama3.2
-   ```
-3. Run Ollama:
-   ```bash
-   ollama serve
-   ```
-4. In `docker-compose.yml` or `.env`, set `OLLAMA_BASE_URL=http://host.docker.internal:11434`.
-5. If Ollama is unavailable, the application **automatically uses high-quality deterministic fallback explanations** with zero latency and zero downtime.
-
----
-
-## 🔒 Security & Privacy Notice
-- **Zero Third-Party Telemetry**: Your banking and transaction data never leaves your infrastructure.
-- **Passlib & BCrypt**: Password hashes use industry-standard salting with bcrypt.
-- **Signed JWT Tokens**: Authentication uses secure SHA-256 tokens stored locally in the browser.
-
----
-
-## 📄 License
-This project is open-source software licensed under the [MIT License](LICENSE).
-#   N e x B u i l d 
- 
- 
+# macOS / Linux:
+chmod +x run_app.sh && ./run_app.sh
