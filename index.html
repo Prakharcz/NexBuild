@@ -91,20 +91,29 @@
       </div>
     </div>
 
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Scenario Selector Dropdown -->
+      <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-xl shadow-sm">
+        <i data-lucide="layers" class="w-3.5 h-3.5 text-emerald-500"></i>
+        <label for="scenario-select" class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 hidden xl:inline">Scenario:</label>
+        <select id="scenario-select" onchange="loadScenario(this.value)" class="bg-transparent text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer">
+          <option value="default">Default: Mixed Statement</option>
+          <option value="healthy">Profile 1: Stable Saver (Low Risk • 92 Score)</option>
+          <option value="subscriptions">Profile 2: Subscription Creep & Price Hikes</option>
+          <option value="anomalies">Profile 3: Volatile Outliers (IQR / Z-Score Spikes)</option>
+          <option value="crunch">Profile 4: Liquidity Crunch (High Risk Alert)</option>
+        </select>
+      </div>
+
       <!-- Light / Dark Mode Toggle Button -->
       <button onclick="toggleTheme()" id="theme-toggle-btn" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition shadow-sm flex items-center gap-1.5 text-xs font-medium" title="Switch between Light & Dark Mode">
         <i id="theme-icon" data-lucide="moon" class="w-4 h-4"></i>
         <span id="theme-text" class="hidden sm:inline">Dark Mode</span>
       </button>
 
-      <span class="hidden md:inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 font-medium">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        Ready & Active
-      </span>
-      <button onclick="resetToSampleData()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 transition flex items-center gap-1.5">
+      <button onclick="resetToSampleData()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 transition flex items-center gap-1.5" title="Reset current scenario data">
         <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-        <span class="hidden sm:inline">Reset Sample Data</span>
+        <span class="hidden sm:inline">Reset</span>
       </button>
     </div>
   </header>
@@ -364,6 +373,79 @@
         <div id="upload-result-box" class="glass-card p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 hidden space-y-2">
           <h4 class="font-bold text-sm flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4"></i> Ingestion Successful</h4>
           <p id="upload-result-msg" class="text-xs text-slate-600 dark:text-slate-300"></p>
+        </div>
+
+        <!-- Sample Datasets Grid -->
+        <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <i data-lucide="folder-archive" class="w-4 h-4 text-emerald-500"></i>
+              <span>Included Sample Datasets (Overview of All Features)</span>
+            </h3>
+            <span class="text-xs text-slate-500">Click to instantly load or download CSV</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <!-- Dataset 1 -->
+            <div class="glass-card p-4 rounded-xl flex flex-col justify-between space-y-2.5 hover:border-emerald-500/50 transition">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-slate-900 dark:text-white">Profile 1: Stable High Saver</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">Low Risk • 92 Score</span>
+                </div>
+                <p class="text-slate-500 dark:text-slate-400 mt-1">High consistent salary, $2,000 monthly investments, predictable expenses, and 8+ months cash buffer.</p>
+              </div>
+              <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                <button onclick="loadScenario('healthy')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-1.5 rounded-lg text-xs transition">Load Scenario</button>
+                <button onclick="downloadCSV('healthy')" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-emerald-500 border border-slate-200 dark:border-slate-700" title="Download CSV"><i data-lucide="download" class="w-4 h-4"></i></button>
+              </div>
+            </div>
+
+            <!-- Dataset 2 -->
+            <div class="glass-card p-4 rounded-xl flex flex-col justify-between space-y-2.5 hover:border-emerald-500/50 transition">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-slate-900 dark:text-white">Profile 2: Subscription Creep</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20">Price Spikes Detected</span>
+                </div>
+                <p class="text-slate-500 dark:text-slate-400 mt-1">8 recurring digital subscriptions. Demonstrates Netflix +25% hike, gym +31% hike, and +525% promo rate jumps.</p>
+              </div>
+              <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                <button onclick="loadScenario('subscriptions')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-1.5 rounded-lg text-xs transition">Load Scenario</button>
+                <button onclick="downloadCSV('subscriptions')" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-emerald-500 border border-slate-200 dark:border-slate-700" title="Download CSV"><i data-lucide="download" class="w-4 h-4"></i></button>
+              </div>
+            </div>
+
+            <!-- Dataset 3 -->
+            <div class="glass-card p-4 rounded-xl flex flex-col justify-between space-y-2.5 hover:border-emerald-500/50 transition">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-slate-900 dark:text-white">Profile 3: Volatile Outliers</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 border border-rose-500/20">IQR / Z-Score Anomalies</span>
+                </div>
+                <p class="text-slate-500 dark:text-slate-400 mt-1">Erratic weekly spending with severe statistical spikes ($2,450 dental surgery, $1,850 transmission repair, $1,120 splurge).</p>
+              </div>
+              <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                <button onclick="loadScenario('anomalies')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-1.5 rounded-lg text-xs transition">Load Scenario</button>
+                <button onclick="downloadCSV('anomalies')" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-emerald-500 border border-slate-200 dark:border-slate-700" title="Download CSV"><i data-lucide="download" class="w-4 h-4"></i></button>
+              </div>
+            </div>
+
+            <!-- Dataset 4 -->
+            <div class="glass-card p-4 rounded-xl flex flex-col justify-between space-y-2.5 hover:border-emerald-500/50 transition">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-slate-900 dark:text-white">Profile 4: Liquidity Crunch</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 border border-rose-500/20">High Risk • 32 Score</span>
+                </div>
+                <p class="text-slate-500 dark:text-slate-400 mt-1">Living paycheck-to-paycheck with &lt; 0.6 months runway, high food delivery drain, and downward cash burn projection.</p>
+              </div>
+              <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                <button onclick="loadScenario('crunch')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-1.5 rounded-lg text-xs transition">Load Scenario</button>
+                <button onclick="downloadCSV('crunch')" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-emerald-500 border border-slate-200 dark:border-slate-700" title="Download CSV"><i data-lucide="download" class="w-4 h-4"></i></button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -659,6 +741,271 @@
       { id: 1, name: "6-Month Emergency Buffer ($10k)", target: 10000, current: 4850, date: "2026-12-31", category: "Emergency Fund" },
       { id: 2, name: "Autumn Travel Fund", target: 2500, current: 1400, date: "2026-11-15", category: "Travel" }
     ];
+
+    // MULTIPLE DEMO SCENARIO PRESETS
+    const SCENARIOS = {
+      default: {
+        txs: DEFAULT_TRANSACTIONS,
+        recs: [
+          {
+            id: 1,
+            title: "Netflix price increased by 25%",
+            description: "Your monthly subscription rose from $15.99 to $19.99 in June, adding $48.00 in extra annual expenses.",
+            category: "recurring_spike",
+            severity: "medium",
+            savings: 4.00,
+            explanation: "[AI Advisor] Netflix increased its tier rate by 25%. Downgrading to the Standard plan saves $96.00/year if 4-screen 4K streaming is not required.",
+            status: "PENDING"
+          },
+          {
+            id: 2,
+            title: "Review High Outlier: Apex Plumbing ($1,250.00)",
+            description: "Emergency Leak Repair was flagged by statistical IQR outlier detection (limit: $250).",
+            category: "anomaly_review",
+            severity: "high",
+            savings: 0.00,
+            explanation: "[AI Advisor] This single charge was 5.1x higher than standard home maintenance. Verify invoice legitimacy and confirm insurance coverage.",
+            status: "PENDING"
+          }
+        ]
+      },
+      healthy: {
+        txs: [
+          { id: 101, date: "2026-04-01", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 102, date: "2026-04-01", description: "Highland Apartments Rent", merchant: "Highland Apts", amount: -1400.00, category: "Housing" },
+          { id: 103, date: "2026-04-03", description: "Trader Joe's Groceries", merchant: "Trader Joe's", amount: -88.40, category: "Groceries" },
+          { id: 104, date: "2026-04-05", description: "City Electric Power", merchant: "Electric Utility", amount: -85.20, category: "Utilities" },
+          { id: 105, date: "2026-04-10", description: "Whole Foods Market", merchant: "Whole Foods", amount: -92.30, category: "Groceries" },
+          { id: 106, date: "2026-04-15", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 107, date: "2026-04-15", description: "Vanguard Total Stock Market Index", merchant: "Vanguard", amount: -2000.00, category: "Investments & Savings" },
+          { id: 108, date: "2026-05-01", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 109, date: "2026-05-01", description: "Highland Apartments Rent", merchant: "Highland Apts", amount: -1400.00, category: "Housing" },
+          { id: 110, date: "2026-05-03", description: "Trader Joe's Groceries", merchant: "Trader Joe's", amount: -91.10, category: "Groceries" },
+          { id: 111, date: "2026-05-15", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 112, date: "2026-05-15", description: "Vanguard Total Stock Market Index", merchant: "Vanguard", amount: -2000.00, category: "Investments & Savings" },
+          { id: 113, date: "2026-06-01", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 114, date: "2026-06-01", description: "Highland Apartments Rent", merchant: "Highland Apts", amount: -1400.00, category: "Housing" },
+          { id: 115, date: "2026-06-15", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 116, date: "2026-06-15", description: "Vanguard Total Stock Market Index", merchant: "Vanguard", amount: -2000.00, category: "Investments & Savings" },
+          { id: 117, date: "2026-07-01", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 118, date: "2026-07-01", description: "Highland Apartments Rent", merchant: "Highland Apts", amount: -1400.00, category: "Housing" },
+          { id: 119, date: "2026-07-15", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 120, date: "2026-07-15", description: "Vanguard Total Stock Market Index", merchant: "Vanguard", amount: -2000.00, category: "Investments & Savings" },
+          { id: 121, date: "2026-08-01", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 122, date: "2026-08-15", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 123, date: "2026-08-15", description: "Vanguard Total Stock Market Index", merchant: "Vanguard", amount: -2000.00, category: "Investments & Savings" },
+          { id: 124, date: "2026-09-01", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 125, date: "2026-09-15", description: "TechCorp Senior Engineer Salary", merchant: "TechCorp", amount: 4800.00, category: "Income" },
+          { id: 126, date: "2026-09-15", description: "Vanguard Total Stock Market Index", merchant: "Vanguard", amount: -2000.00, category: "Investments & Savings" }
+        ],
+        recs: [
+          {
+            id: 11,
+            title: "Accelerate Home Down Payment Goal",
+            description: "With a 58% savings surplus, you can increase monthly contributions to reach your home goal 4 months ahead of schedule.",
+            category: "goal_optimization",
+            severity: "low",
+            savings: 500.00,
+            explanation: "[AI Advisor] Your liquidity buffer exceeds 8 months of expenses. Allocating $500/mo of excess cash flow toward your target property down payment shortens financing by over a year.",
+            status: "PENDING"
+          }
+        ]
+      },
+      subscriptions: {
+        txs: [
+          { id: 201, date: "2026-04-01", description: "Company Payroll Direct Deposit", merchant: "Payroll", amount: 3100.00, category: "Income" },
+          { id: 202, date: "2026-04-01", description: "Apartment Lease Payment", merchant: "Lease", amount: -1350.00, category: "Housing" },
+          { id: 203, date: "2026-04-03", description: "Spotify Family Music", merchant: "Spotify", amount: -16.99, category: "Entertainment" },
+          { id: 204, date: "2026-04-04", description: "Netflix Streaming Premium", merchant: "Netflix", amount: -15.99, category: "Entertainment" },
+          { id: 205, date: "2026-04-05", description: "Adobe Creative Cloud", merchant: "Adobe", amount: -54.99, category: "Shopping" },
+          { id: 206, date: "2026-04-06", description: "NYTimes Promo Subscription", merchant: "NYTimes", amount: -4.00, category: "Entertainment" },
+          { id: 207, date: "2026-04-08", description: "HelloFresh Weekly Meal Kit", merchant: "HelloFresh", amount: -74.50, category: "Food & Dining" },
+          { id: 208, date: "2026-04-10", description: "Planet Fitness Gym Membership", merchant: "Planet Fitness", amount: -45.00, category: "Health & Fitness" },
+          { id: 209, date: "2026-04-15", description: "Company Payroll Direct Deposit", merchant: "Payroll", amount: 3100.00, category: "Income" },
+          { id: 210, date: "2026-04-15", description: "HelloFresh Weekly Meal Kit", merchant: "HelloFresh", amount: -74.50, category: "Food & Dining" },
+          { id: 211, date: "2026-05-01", description: "Company Payroll Direct Deposit", merchant: "Payroll", amount: 3100.00, category: "Income" },
+          { id: 212, date: "2026-05-04", description: "Netflix Streaming Premium", merchant: "Netflix", amount: -15.99, category: "Entertainment" },
+          { id: 213, date: "2026-05-10", description: "Planet Fitness Gym Membership", merchant: "Planet Fitness", amount: -45.00, category: "Health & Fitness" },
+          { id: 214, date: "2026-05-15", description: "Company Payroll Direct Deposit", merchant: "Payroll", amount: 3100.00, category: "Income" },
+          { id: 215, date: "2026-06-01", description: "Company Payroll Direct Deposit", merchant: "Payroll", amount: 3100.00, category: "Income" },
+          { id: 216, date: "2026-06-04", description: "Netflix Streaming Premium", merchant: "Netflix", amount: -19.99, category: "Entertainment" },
+          { id: 217, date: "2026-06-06", description: "NYTimes Standard Rate Renewal", merchant: "NYTimes", amount: -25.00, category: "Entertainment" },
+          { id: 218, date: "2026-06-10", description: "Planet Fitness Gym Membership", merchant: "Planet Fitness", amount: -59.00, category: "Health & Fitness" },
+          { id: 219, date: "2026-06-15", description: "Company Payroll Direct Deposit", merchant: "Payroll", amount: 3100.00, category: "Income" },
+          { id: 220, date: "2026-07-04", description: "Netflix Streaming Premium", merchant: "Netflix", amount: -19.99, category: "Entertainment" },
+          { id: 221, date: "2026-07-06", description: "NYTimes Standard Rate Renewal", merchant: "NYTimes", amount: -25.00, category: "Entertainment" },
+          { id: 222, date: "2026-07-10", description: "Planet Fitness Gym Membership", merchant: "Planet Fitness", amount: -59.00, category: "Health & Fitness" },
+          { id: 223, date: "2026-08-04", description: "Netflix Streaming Premium", merchant: "Netflix", amount: -19.99, category: "Entertainment" },
+          { id: 224, date: "2026-08-06", description: "NYTimes Standard Rate Renewal", merchant: "NYTimes", amount: -25.00, category: "Entertainment" },
+          { id: 225, date: "2026-08-10", description: "Planet Fitness Gym Membership", merchant: "Planet Fitness", amount: -59.00, category: "Health & Fitness" },
+          { id: 226, date: "2026-09-04", description: "Netflix Streaming Premium", merchant: "Netflix", amount: -19.99, category: "Entertainment" },
+          { id: 227, date: "2026-09-06", description: "NYTimes Standard Rate Renewal", merchant: "NYTimes", amount: -25.00, category: "Entertainment" },
+          { id: 228, date: "2026-09-10", description: "Planet Fitness Gym Membership", merchant: "Planet Fitness", amount: -59.00, category: "Health & Fitness" }
+        ],
+        recs: [
+          {
+            id: 21,
+            title: "Netflix price jumped +25%",
+            description: "Increased from $15.99 to $19.99/mo (+48.00/yr).",
+            category: "recurring_spike",
+            severity: "medium",
+            savings: 4.00,
+            explanation: "[AI Advisor] Detected price increase of 25%. Evaluate standard tier with ads to save $96/yr.",
+            status: "PENDING"
+          },
+          {
+            id: 22,
+            title: "Planet Fitness gym rate increased +31%",
+            description: "Rose from $45.00 to $59.00/mo.",
+            category: "recurring_spike",
+            severity: "medium",
+            savings: 14.00,
+            explanation: "[AI Advisor] Monthly fitness dues rose by $14/month ($168 annually). Check if grandfathered rates apply.",
+            status: "PENDING"
+          },
+          {
+            id: 23,
+            title: "NYTimes promotional discount ended (+525%)",
+            description: "Rate jumped from $4.00 introductory promo to $25.00 standard rate.",
+            category: "recurring_spike",
+            severity: "high",
+            savings: 21.00,
+            explanation: "[AI Advisor] Introductory promo rate expired. Calling to renegotiate typically renews the $4/mo rate.",
+            status: "PENDING"
+          }
+        ]
+      },
+      anomalies: {
+        txs: [
+          { id: 301, date: "2026-04-01", description: "Direct Deposit Payroll", merchant: "Payroll", amount: 3300.00, category: "Income" },
+          { id: 302, date: "2026-04-01", description: "Residential Rent", merchant: "Rent", amount: -1450.00, category: "Housing" },
+          { id: 303, date: "2026-04-03", description: "Trader Joe's Groceries", merchant: "Trader Joe's", amount: -68.20, category: "Groceries" },
+          { id: 304, date: "2026-04-05", description: "Shell Gas Station", merchant: "Shell", amount: -42.10, category: "Transportation" },
+          { id: 305, date: "2026-04-15", description: "Direct Deposit Payroll", merchant: "Payroll", amount: 3300.00, category: "Income" },
+          { id: 306, date: "2026-05-01", description: "Direct Deposit Payroll", merchant: "Payroll", amount: 3300.00, category: "Income" },
+          { id: 307, date: "2026-05-01", description: "Residential Rent", merchant: "Rent", amount: -1450.00, category: "Housing" },
+          { id: 308, date: "2026-05-18", description: "Apex Emergency Dental Surgery Root Canal", merchant: "Apex Dental", amount: -2450.00, category: "Health & Fitness" },
+          { id: 309, date: "2026-06-01", description: "Direct Deposit Payroll", merchant: "Payroll", amount: 3300.00, category: "Income" },
+          { id: 310, date: "2026-06-01", description: "Residential Rent", merchant: "Rent", amount: -1450.00, category: "Housing" },
+          { id: 311, date: "2026-06-12", description: "Precision Auto Transmission Rebuild", merchant: "Precision Auto", amount: -1850.00, category: "Transportation" },
+          { id: 312, date: "2026-07-01", description: "Direct Deposit Payroll", merchant: "Payroll", amount: 3300.00, category: "Income" },
+          { id: 313, date: "2026-07-01", description: "Residential Rent", merchant: "Rent", amount: -1450.00, category: "Housing" },
+          { id: 314, date: "2026-07-22", description: "Nordstrom Luxury Designer Splurge", merchant: "Nordstrom", amount: -1120.00, category: "Shopping" },
+          { id: 315, date: "2026-08-01", description: "Direct Deposit Payroll", merchant: "Payroll", amount: 3300.00, category: "Income" },
+          { id: 316, date: "2026-08-18", description: "Best Buy 4K OLED Television", merchant: "Best Buy", amount: -1499.00, category: "Shopping" },
+          { id: 317, date: "2026-09-01", description: "Direct Deposit Payroll", merchant: "Payroll", amount: 3300.00, category: "Income" }
+        ],
+        recs: [
+          {
+            id: 31,
+            title: "Statistical Spike Alert: Apex Dental Surgery ($2,450.00)",
+            description: "Health & Fitness outlier charge detected with Z-score of 4.8σ.",
+            category: "anomaly_review",
+            severity: "high",
+            savings: 0.00,
+            explanation: "[AI Advisor] Extreme outlier detected. Verify health insurance claims to ensure maximum permissible out-of-pocket reimbursement.",
+            status: "PENDING"
+          },
+          {
+            id: 32,
+            title: "Automotive Repair Outlier: Precision Auto ($1,850.00)",
+            description: "Transmission rebuild is 6.2x higher than typical transportation expense.",
+            category: "anomaly_review",
+            severity: "high",
+            savings: 0.00,
+            explanation: "[AI Advisor] Major one-off mechanical repair. Separate from discretionary budget so moving average forecast is not skewed.",
+            status: "PENDING"
+          }
+        ]
+      },
+      crunch: {
+        txs: [
+          { id: 401, date: "2026-04-01", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" },
+          { id: 402, date: "2026-04-01", description: "Metro City Apartment Rent", merchant: "Apartment", amount: -1600.00, category: "Housing" },
+          { id: 403, date: "2026-04-02", description: "DoorDash Food Delivery", merchant: "DoorDash", amount: -44.50, category: "Food & Dining" },
+          { id: 404, date: "2026-04-04", description: "Uber Eats Takeout Dinner", merchant: "Uber Eats", amount: -38.90, category: "Food & Dining" },
+          { id: 405, date: "2026-04-08", description: "Downtown Bar Drinks", merchant: "Bar", amount: -86.00, category: "Food & Dining" },
+          { id: 406, date: "2026-04-10", description: "Overdraft & Late Fee", merchant: "Bank", amount: -35.00, category: "Utilities" },
+          { id: 407, date: "2026-04-15", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" },
+          { id: 408, date: "2026-04-16", description: "City Electric & Gas", merchant: "Electric", amount: -142.50, category: "Utilities" },
+          { id: 409, date: "2026-05-01", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" },
+          { id: 410, date: "2026-05-01", description: "Metro City Apartment Rent", merchant: "Apartment", amount: -1600.00, category: "Housing" },
+          { id: 411, date: "2026-05-03", description: "DoorDash Food Delivery", merchant: "DoorDash", amount: -48.20, category: "Food & Dining" },
+          { id: 412, date: "2026-05-15", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" },
+          { id: 413, date: "2026-06-01", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" },
+          { id: 414, date: "2026-06-01", description: "Metro City Apartment Rent", merchant: "Apartment", amount: -1600.00, category: "Housing" },
+          { id: 415, date: "2026-06-03", description: "DoorDash Food Delivery", merchant: "DoorDash", amount: -51.20, category: "Food & Dining" },
+          { id: 416, date: "2026-06-15", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" },
+          { id: 417, date: "2026-07-01", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" },
+          { id: 418, date: "2026-07-01", description: "Metro City Apartment Rent", merchant: "Apartment", amount: -1600.00, category: "Housing" },
+          { id: 419, date: "2026-07-15", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" },
+          { id: 420, date: "2026-08-01", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" },
+          { id: 421, date: "2026-08-01", description: "Metro City Apartment Rent", merchant: "Apartment", amount: -1600.00, category: "Housing" },
+          { id: 422, date: "2026-08-15", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" },
+          { id: 423, date: "2026-09-01", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" },
+          { id: 424, date: "2026-09-01", description: "Metro City Apartment Rent", merchant: "Apartment", amount: -1600.00, category: "Housing" },
+          { id: 425, date: "2026-09-15", description: "Service Work Paycheck", merchant: "Paycheck", amount: 1750.00, category: "Income" }
+        ],
+        recs: [
+          {
+            id: 41,
+            title: "Critical Liquidity Alert: Runway < 0.5 Months",
+            description: "Estimated cash buffer covers only 12 days of expenses ($340.00 liquid reserve).",
+            category: "liquidity_buffer",
+            severity: "critical",
+            savings: 280.00,
+            explanation: "[AI Advisor] High financial risk. Rent alone consumes 46% of income. Restricting takeout delivery apps for 30 days generates a crucial $280 buffer.",
+            status: "PENDING"
+          },
+          {
+            id: 42,
+            title: "Trim Food Delivery Services (-$320/mo)",
+            description: "DoorDash and UberEats charges represent 23% of total monthly outflow.",
+            category: "high_spend",
+            severity: "high",
+            savings: 320.00,
+            explanation: "[AI Advisor] Meal delivery charges are accelerating deficit burn. Cooking at home halts account drain.",
+            status: "PENDING"
+          }
+        ]
+      }
+    };
+
+    function loadScenario(scenarioKey) {
+      const scenario = SCENARIOS[scenarioKey] || SCENARIOS.default;
+      transactions = [...scenario.txs];
+      recommendations = [...scenario.recs];
+      saveState();
+
+      // Update selector UI if called programmatically
+      const sel = document.getElementById('scenario-select');
+      if (sel && sel.value !== scenarioKey) {
+        sel.value = scenarioKey;
+      }
+
+      renderDashboard();
+      if (!document.getElementById('page-transactions').classList.contains('hidden')) renderTransactions();
+      if (!document.getElementById('page-analytics').classList.contains('hidden')) renderAnalytics();
+      if (!document.getElementById('page-recommendations').classList.contains('hidden')) renderRecommendations();
+      lucide.createIcons();
+    }
+
+    function downloadCSV(scenarioKey) {
+      const scenario = SCENARIOS[scenarioKey] || SCENARIOS.default;
+      let csv = "Date,Description,Amount,Category\n";
+      scenario.txs.forEach(t => {
+        csv += `${t.date},"${t.description}",${t.amount},${t.category}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `scenario_${scenarioKey}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
 
     let currentAnomalyFilter = false;
     let selectedRecId = null;
