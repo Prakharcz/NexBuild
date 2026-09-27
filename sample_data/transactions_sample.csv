@@ -1,0 +1,100 @@
+Date,Description,Amount,Category
+2026-04-01,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-04-01,Oakwood Property Management Rent,-1500.00,Housing
+2026-04-02,Trader Joe's Groceries,-84.50,Groceries
+2026-04-03,Starbucks Coffee,-6.75,Food & Dining
+2026-04-04,Netflix Subscription,-15.99,Entertainment
+2026-04-05,Spotify Premium,-10.99,Entertainment
+2026-04-07,Shell Oil Gas Station,-45.20,Transportation
+2026-04-08,Metropolitan Electric Utility,-112.40,Utilities
+2026-04-10,Whole Foods Market,-95.30,Groceries
+2026-04-12,Chipotle Mexican Grill,-16.85,Food & Dining
+2026-04-14,Uber Ride Trip,-22.40,Transportation
+2026-04-15,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-04-15,Planet Fitness Gym Membership,-45.00,Health & Fitness
+2026-04-18,City Water & Sewage Utility,-62.10,Utilities
+2026-04-20,Trader Joe's Groceries,-104.20,Groceries
+2026-04-22,Target Store Essentials,-58.40,Shopping
+2026-04-25,Comcast Xfinity High Speed Internet,-79.99,Utilities
+2026-04-28,Local Bistro Dinner,-64.50,Food & Dining
+2026-05-01,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-05-01,Oakwood Property Management Rent,-1500.00,Housing
+2026-05-02,Trader Joe's Groceries,-92.10,Groceries
+2026-05-04,Netflix Subscription,-15.99,Entertainment
+2026-05-05,Spotify Premium,-10.99,Entertainment
+2026-05-06,Starbucks Coffee,-7.25,Food & Dining
+2026-05-08,Shell Oil Gas Station,-48.50,Transportation
+2026-05-09,Metropolitan Electric Utility,-118.60,Utilities
+2026-05-11,Whole Foods Market,-115.40,Groceries
+2026-05-14,Amazon.com Online Order,-42.99,Shopping
+2026-05-15,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-05-15,Planet Fitness Gym Membership,-45.00,Health & Fitness
+2026-05-17,City Water & Sewage Utility,-59.80,Utilities
+2026-05-19,Trader Joe's Groceries,-88.75,Groceries
+2026-05-21,Chipotle Mexican Grill,-18.20,Food & Dining
+2026-05-24,Uber Ride Trip,-28.90,Transportation
+2026-05-25,Comcast Xfinity High Speed Internet,-79.99,Utilities
+2026-05-27,Apex Plumbing Emergency Leak Repair,-1250.00,Housing
+2026-06-01,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-06-01,Oakwood Property Management Rent,-1500.00,Housing
+2026-06-02,Trader Joe's Groceries,-97.60,Groceries
+2026-06-04,Netflix Subscription,-19.99,Entertainment
+2026-06-05,Spotify Premium,-10.99,Entertainment
+2026-06-07,Starbucks Coffee,-6.50,Food & Dining
+2026-06-08,Shell Oil Gas Station,-46.80,Transportation
+2026-06-09,Metropolitan Electric Utility,-135.20,Utilities
+2026-06-12,Whole Foods Market,-108.90,Groceries
+2026-06-15,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-06-15,Planet Fitness Gym Membership,-45.00,Health & Fitness
+2026-06-18,City Water & Sewage Utility,-64.30,Utilities
+2026-06-20,Trader Joe's Groceries,-112.50,Groceries
+2026-06-22,Target Store Essentials,-74.20,Shopping
+2026-06-25,Comcast Xfinity High Speed Internet,-79.99,Utilities
+2026-06-28,Local Bistro Dinner,-82.00,Food & Dining
+2026-07-01,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-07-01,Oakwood Property Management Rent,-1500.00,Housing
+2026-07-03,Trader Joe's Groceries,-89.40,Groceries
+2026-07-04,Netflix Subscription,-19.99,Entertainment
+2026-07-05,Spotify Premium,-10.99,Entertainment
+2026-07-06,Shell Oil Gas Station,-49.10,Transportation
+2026-07-08,Metropolitan Electric Utility,-142.80,Utilities
+2026-07-10,Whole Foods Market,-124.60,Groceries
+2026-07-12,Chipotle Mexican Grill,-17.50,Food & Dining
+2026-07-15,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-07-15,Planet Fitness Gym Membership,-45.00,Health & Fitness
+2026-07-18,City Water & Sewage Utility,-61.50,Utilities
+2026-07-20,Trader Joe's Groceries,-105.80,Groceries
+2026-07-23,Best Buy Electronics Tech Purchase,-899.00,Shopping
+2026-07-25,Comcast Xfinity High Speed Internet,-79.99,Utilities
+2026-07-28,Starbucks Coffee,-7.50,Food & Dining
+2026-08-01,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-08-01,Oakwood Property Management Rent,-1500.00,Housing
+2026-08-02,Trader Joe's Groceries,-94.30,Groceries
+2026-08-04,Netflix Subscription,-19.99,Entertainment
+2026-08-05,Spotify Premium,-10.99,Entertainment
+2026-08-08,Shell Oil Gas Station,-47.90,Transportation
+2026-08-09,Metropolitan Electric Utility,-158.40,Utilities
+2026-08-11,Whole Foods Market,-118.20,Groceries
+2026-08-14,Uber Ride Trip,-31.40,Transportation
+2026-08-15,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-08-15,Planet Fitness Gym Membership,-45.00,Health & Fitness
+2026-08-18,City Water & Sewage Utility,-65.00,Utilities
+2026-08-20,Trader Joe's Groceries,-99.80,Groceries
+2026-08-23,Amazon.com Online Order,-63.50,Shopping
+2026-08-25,Comcast Xfinity High Speed Internet,-79.99,Utilities
+2026-08-28,Local Bistro Dinner,-76.80,Food & Dining
+2026-09-01,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-09-01,Oakwood Property Management Rent,-1500.00,Housing
+2026-09-02,Trader Joe's Groceries,-98.40,Groceries
+2026-09-04,Netflix Subscription,-19.99,Entertainment
+2026-09-05,Spotify Premium,-10.99,Entertainment
+2026-09-07,Starbucks Coffee,-6.80,Food & Dining
+2026-09-08,Shell Oil Gas Station,-51.20,Transportation
+2026-09-09,Metropolitan Electric Utility,-121.50,Utilities
+2026-09-12,Whole Foods Market,-110.30,Groceries
+2026-09-15,Acme Corp Payroll Direct Deposit,3200.00,Income
+2026-09-15,Planet Fitness Gym Membership,-45.00,Health & Fitness
+2026-09-17,City Water & Sewage Utility,-58.90,Utilities
+2026-09-20,Trader Joe's Groceries,-101.40,Groceries
+2026-09-22,Target Store Essentials,-61.20,Shopping
+2026-09-25,Comcast Xfinity High Speed Internet,-79.99,Utilities
