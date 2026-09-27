@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AegisFinance | AI-Powered Personal Finance & Financial Risk Agent</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js for interactive analytics & forecasting -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 500: '#10b981', 600: '#059669' },
+            slate: { 850: '#151f32', 950: '#090d16' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #0b0f19; color: #f1f5f9; font-family: system-ui, -apple-system, sans-serif; }
+    .glass-card { background: rgba(22, 30, 49, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0b0f19; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- TOP NAVBAR -->
+  <header class="h-16 border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+        <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+      </div>
+      <div>
+        <span class="font-bold text-lg text-white tracking-tight flex items-center gap-2">
+          Aegis<span class="text-emerald-400">Finance</span>
+          <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+            Risk & Forecasting Agent
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <span class="hidden sm:inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Standalone Web App Mode
+      </span>
+      <button onclick="resetToSampleData()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+        <span>Reload Sample Data</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <div class="flex-1 flex max-w-7xl mx-auto w-full">
+    <!-- SIDEBAR NAV -->
+    <aside class="w-60 border-r border-slate-800 p-4 space-y-1 shrink-0 hidden md:block">
+      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+      </button>
+      <button onclick="switchTab('transactions')" id="nav-transactions" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white">
+        <i data-lucide="receipt" class="w-4 h-4"></i> Transactions
+      </button>
+      <button onclick="switchTab('upload')" id="nav-upload" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white">
+        <i data-lucide="upload-cloud" class="w-4 h-4"></i> Upload Bank CSV
+      </button>
+      <button onclick="switchTab('analytics')" id="nav-analytics" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white">
+        <i data-lucide="pie-chart" class="w-4 h-4"></i> Analytics & Recurring
+      </button>
+      <button onclick="switchTab('goals')" id="nav-goals" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white">
+        <i data-lucide="target" class="w-4 h-4"></i> Savings Goals
+      </button>
+      <button onclick="switchTab('recommendations')" id="nav-recommendations" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-800/60 hover:text-white">
+        <i data-lucide="sparkles" class="w-4 h-4"></i> AI Recommendations
+      </button>
+    </aside>
+
+    <!-- CONTENT BODY -->
+    <main class="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto">
+
+      <!-- ================= PAGE: DASHBOARD ================= -->
+      <section id="page-dashboard" class="space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-white tracking-tight">Financial Risk Cockpit</h1>
+            <p class="text-xs text-slate-400 mt-1">Real-time liquidity telemetry, spending anomaly detection, and cash flow forecast.</p>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="glass-card p-5 rounded-2xl">
+            <div class="flex justify-between items-center text-xs text-slate-400 font-semibold uppercase">Total Income <i data-lucide="trending-up" class="w-4 h-4 text-emerald-400"></i></div>
+            <p id="stat-income" class="text-2xl font-bold text-white mt-2">$0.00</p>
+            <p class="text-[11px] text-emerald-400 mt-1">Direct deposits & inflows</p>
+          </div>
+          <div class="glass-card p-5 rounded-2xl">
+            <div class="flex justify-between items-center text-xs text-slate-400 font-semibold uppercase">Total Expenses <i data-lucide="trending-down" class="w-4 h-4 text-rose-400"></i></div>
+            <p id="stat-expenses" class="text-2xl font-bold text-white mt-2">$0.00</p>
+            <p class="text-[11px] text-rose-400 mt-1">Living expenses & subscriptions</p>
+          </div>
+          <div class="glass-card p-5 rounded-2xl">
+            <div class="flex justify-between items-center text-xs text-slate-400 font-semibold uppercase">Net Cash Flow <i data-lucide="dollar-sign" class="w-4 h-4 text-blue-400"></i></div>
+            <p id="stat-net" class="text-2xl font-bold text-white mt-2">$0.00</p>
+            <p id="stat-net-sub" class="text-[11px] text-blue-400 mt-1">Net accumulated reserve</p>
+          </div>
+          <div class="glass-card p-5 rounded-2xl">
+            <div class="flex justify-between items-center text-xs text-slate-400 font-semibold uppercase">Savings Rate <i data-lucide="shield-check" class="w-4 h-4 text-purple-400"></i></div>
+            <p id="stat-rate" class="text-2xl font-bold text-white mt-2">0%</p>
+            <p class="text-[11px] text-purple-400 mt-1">Retained income ratio</p>
+          </div>
+        </div>
+
+        <!-- Risk Score Gauge & Forecast Chart Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Risk Gauge Card -->
+          <div class="glass-card p-6 rounded-2xl flex flex-col items-center justify-between text-center">
+            <div class="flex justify-between items-center w-full mb-2">
+              <span class="text-xs font-semibold uppercase text-slate-400">Financial Risk Score</span>
+              <span id="risk-badge" class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Low Risk</span>
+            </div>
+            
+            <div class="relative my-4 w-36 h-36 flex items-center justify-center">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="56" stroke="#1e293b" stroke-width="10" fill="transparent"></circle>
+                <circle id="risk-svg-meter" cx="70" cy="70" r="56" stroke="#10b981" stroke-width="10" stroke-dasharray="351.8" stroke-dashoffset="70" stroke-linecap="round" fill="transparent" class="transition-all duration-1000"></circle>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span id="risk-score-num" class="text-3xl font-extrabold text-white">82</span>
+                <span class="text-[10px] text-slate-400">/ 100 Score</span>
+              </div>
+            </div>
+
+            <div class="w-full space-y-2 text-xs pt-3 border-t border-slate-800">
+              <div class="flex justify-between text-slate-400">
+                <span>Liquidity Runway:</span>
+                <span id="risk-runway-val" class="text-slate-200 font-semibold font-mono">4.2 months</span>
+              </div>
+              <div class="flex justify-between text-slate-400">
+                <span>Spending Volatility:</span>
+                <span id="risk-volatility-val" class="text-slate-200 font-semibold font-mono">CV: 0.28 (Stable)</span>
+              </div>
+              <div class="flex justify-between text-slate-400">
+                <span>Savings Margin:</span>
+                <span id="risk-margin-val" class="text-emerald-400 font-semibold font-mono">+38.5%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 30-Day Forecast Chart -->
+          <div class="lg:col-span-2 glass-card p-6 rounded-2xl flex flex-col justify-between">
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <h3 class="text-sm font-semibold text-white">30-Day Cash Flow & Account Balance Projection</h3>
+                <p class="text-xs text-slate-400">Moving average spending combined with scheduled recurring commitments.</p>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] text-slate-400">Projected 30-Day Balance</span>
+                <p id="forecast-end-val" class="text-base font-bold text-emerald-400">$0.00</p>
+              </div>
+            </div>
+            <div class="h-64 w-full">
+              <canvas id="forecastChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Month over Month Chart & Anomalies -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 glass-card p-6 rounded-2xl">
+            <h3 class="text-sm font-semibold text-white mb-1">Month-Over-Month Performance</h3>
+            <p class="text-xs text-slate-400 mb-4">Comparison of total monthly income vs total expenditures.</p>
+            <div class="h-64 w-full">
+              <canvas id="momChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Flagged Anomalies Card -->
+          <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-sm font-semibold text-white flex items-center gap-1.5">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i> Flagged Outliers
+                </h3>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">IQR / Z-Score</span>
+              </div>
+              <p class="text-xs text-slate-400 mb-3">Statistically anomalous charges flagged for review.</p>
+              <div id="anomalies-list" class="space-y-2.5">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+            <button onclick="switchTab('transactions')" class="mt-4 pt-3 border-t border-slate-800 text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center justify-between">
+              <span>View All In Transactions Table</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE: TRANSACTIONS ================= -->
+      <section id="page-transactions" class="space-y-6 hidden">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-2xl font-bold text-white tracking-tight">Transactions</h1>
+            <p class="text-xs text-slate-400 mt-1">Browse, filter by category, edit classifications, and examine flagged anomalies.</p>
+          </div>
+          <button onclick="openAddTxModal()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition">
+            <i data-lucide="plus" class="w-4 h-4"></i> Add Transaction
+          </button>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="glass-card p-4 rounded-2xl flex flex-col sm:flex-row gap-3 items-center">
+          <div class="relative flex-1 w-full">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input id="tx-search-input" oninput="renderTransactions()" type="text" placeholder="Search merchant, description, or amount..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
+          </div>
+          <select id="tx-category-select" onchange="renderTransactions()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+            <option value="ALL">All Categories</option>
+            <option value="Income">Income</option>
+            <option value="Housing">Housing</option>
+            <option value="Groceries">Groceries</option>
+            <option value="Food & Dining">Food & Dining</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Health & Fitness">Health & Fitness</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Uncategorized">Uncategorized</option>
+          </select>
+          <button id="tx-anomaly-filter-btn" onclick="toggleAnomalyFilter()" class="bg-slate-900 border border-slate-700 text-slate-400 hover:text-white px-3 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 whitespace-nowrap">
+            <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span id="tx-anomaly-btn-text">Anomalies Only</span>
+          </button>
+        </div>
+
+        <!-- Table -->
+        <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-900/80 border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase">
+                <tr>
+                  <th class="py-3 px-4">Date</th>
+                  <th class="py-3 px-4">Description</th>
+                  <th class="py-3 px-4">Category</th>
+                  <th class="py-3 px-4 text-right">Amount</th>
+                  <th class="py-3 px-4 text-center">Status</th>
+                  <th class="py-3 px-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="tx-table-body" class="divide-y divide-slate-800/60">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE: UPLOAD ================= -->
+      <section id="page-upload" class="space-y-6 hidden">
+        <div>
+          <h1 class="text-2xl font-bold text-white tracking-tight">Upload Bank CSV Statement</h1>
+          <p class="text-xs text-slate-400 mt-1">Drag and drop your statement file for automatic parsing, categorization, and statistical outlier scanning.</p>
+        </div>
+
+        <div id="upload-dropzone" ondragover="event.preventDefault(); this.classList.add('border-emerald-500');" ondragleave="this.classList.remove('border-emerald-500');" ondrop="handleDrop(event)" class="border-2 border-dashed border-slate-800 hover:border-slate-700 rounded-3xl p-10 flex flex-col items-center justify-center text-center bg-slate-900/40 transition">
+          <div class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 text-emerald-400">
+            <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+          </div>
+          <h3 class="text-base font-semibold text-white mb-1">Drag & Drop bank CSV statement here</h3>
+          <p class="text-xs text-slate-400 max-w-sm mb-4">Supports Chase, Bank of America, Wells Fargo, and generic banking export formats.</p>
+          <label class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-700 transition">
+            Browse Files
+            <input type="file" accept=".csv" onchange="handleFileSelect(event)" class="hidden" />
+          </label>
+        </div>
+
+        <div id="upload-result-box" class="glass-card p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hidden space-y-2">
+          <h4 class="font-bold text-sm flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4"></i> Ingestion Successful</h4>
+          <p id="upload-result-msg" class="text-xs text-slate-300"></p>
+        </div>
+      </section>
+
+      <!-- ================= PAGE: ANALYTICS ================= -->
+      <section id="page-analytics" class="space-y-6 hidden">
+        <div>
+          <h1 class="text-2xl font-bold text-white tracking-tight">Spending Analytics & Recurring Subscriptions</h1>
+          <p class="text-xs text-slate-400 mt-1">Category allocations and recurring merchant interval cadences.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="glass-card p-6 rounded-2xl flex flex-col items-center">
+            <h3 class="text-sm font-semibold text-white mb-2 self-start">Expense Distribution</h3>
+            <div class="h-64 w-full">
+              <canvas id="categoryDoughnutChart"></canvas>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2 glass-card p-6 rounded-2xl">
+            <h3 class="text-sm font-semibold text-white mb-4">Category Spend Breakdown</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase">
+                  <tr>
+                    <th class="py-2.5 px-3">Category</th>
+                    <th class="py-2.5 px-3 text-right">Total Spent</th>
+                    <th class="py-2.5 px-3 text-right">Budget Share</th>
+                    <th class="py-2.5 px-3 text-center">Transactions</th>
+                  </tr>
+                </thead>
+                <tbody id="category-table-body" class="divide-y divide-slate-800/60">
+                  <!-- Populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recurring Subscriptions Table -->
+        <div class="glass-card p-6 rounded-2xl">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+                <i data-lucide="refresh-cw" class="w-4 h-4 text-emerald-400"></i>
+                <span>Detected Recurring Subscriptions & Cash Flows</span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Algorithmically grouped by merchant frequency and interval days.</p>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase">
+                <tr>
+                  <th class="py-2.5 px-3">Merchant / Stream</th>
+                  <th class="py-2.5 px-3">Category</th>
+                  <th class="py-2.5 px-3 text-center">Cadence</th>
+                  <th class="py-2.5 px-3 text-right">Avg Amount</th>
+                  <th class="py-2.5 px-3 text-center">Frequency Alert</th>
+                </tr>
+              </thead>
+              <tbody id="recurring-table-body" class="divide-y divide-slate-800/60">
+                <!-- Populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE: GOALS ================= -->
+      <section id="page-goals" class="space-y-6 hidden">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-2xl font-bold text-white tracking-tight">Savings Goals</h1>
+            <p class="text-xs text-slate-400 mt-1">Capital benchmarks, completion pacing, and monthly required funding.</p>
+          </div>
+          <button onclick="openAddGoalModal()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition">
+            <i data-lucide="plus" class="w-4 h-4"></i> New Goal
+          </button>
+        </div>
+
+        <div id="goals-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Populated -->
+        </div>
+      </section>
+
+      <!-- ================= PAGE: RECOMMENDATIONS ================= -->
+      <section id="page-recommendations" class="space-y-6 hidden">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>AI Risk Advisory & Human Approval</span>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">Human-in-the-Loop</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Actions require explicit confirmation before execution. All decisions enter an immutable audit trail.</p>
+          </div>
+        </div>
+
+        <!-- 2 Sub-Tabs -->
+        <div class="flex gap-6 border-b border-slate-800">
+          <button onclick="switchRecTab('active')" id="rec-tab-active" class="pb-3 text-xs font-semibold text-emerald-400 border-b-2 border-emerald-400 flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4"></i> Pending Recommendations (<span id="pending-recs-count">0</span>)
+          </button>
+          <button onclick="switchRecTab('audit')" id="rec-tab-audit" class="pb-3 text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-2">
+            <i data-lucide="history" class="w-4 h-4"></i> Decision Audit Log (<span id="audit-logs-count">0</span>)
+          </button>
+        </div>
+
+        <div id="rec-pane-active" class="space-y-4">
+          <!-- Populated with recommendations -->
+        </div>
+
+        <div id="rec-pane-audit" class="glass-card rounded-2xl overflow-hidden hidden">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-900 border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase">
+              <tr>
+                <th class="py-3 px-4">Timestamp</th>
+                <th class="py-3 px-4">Action Taken</th>
+                <th class="py-3 px-4">Target Recommendation</th>
+                <th class="py-3 px-4">Decision Notes</th>
+              </tr>
+            </thead>
+            <tbody id="audit-table-body" class="divide-y divide-slate-800/60">
+              <!-- Populated with audit logs -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- CONFIRMATION MODAL (HUMAN-IN-THE-LOOP APPROVAL) -->
+  <div id="approval-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-white text-base">Confirm Human-in-the-Loop Decision</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div>
+        <p class="text-xs text-slate-400">Target Recommendation:</p>
+        <p id="modal-rec-title" class="font-semibold text-white text-sm mt-0.5"></p>
+      </div>
+      <div>
+        <p class="text-xs text-slate-400">Action to execute:</p>
+        <span id="modal-action-badge" class="inline-block mt-1 font-mono text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">ACTED_ON</span>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-300 mb-1">Decision Reason / Audit Notes (Optional)</label>
+        <textarea id="modal-notes" rows="2" placeholder="e.g. Canceled subscription or reduced discretionary spending..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500"></textarea>
+      </div>
+      <div class="flex justify-end gap-3 pt-3 border-t border-slate-800">
+        <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white">Cancel</button>
+        <button onclick="confirmApprovalDecision()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Record & Log Decision</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD TRANSACTION MODAL -->
+  <div id="add-tx-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-white text-base">Add New Transaction</h3>
+        <button onclick="closeAddTxModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Date</label>
+          <input id="add-tx-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Description</label>
+          <input id="add-tx-desc" type="text" placeholder="e.g. Trader Joe's Groceries" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Amount (+ for income, - for expense)</label>
+          <input id="add-tx-amount" type="number" step="0.01" placeholder="-65.50" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Category</label>
+          <select id="add-tx-category" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-xs text-white">
+            <option value="Groceries">Groceries</option>
+            <option value="Food & Dining">Food & Dining</option>
+            <option value="Housing">Housing</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Health & Fitness">Health & Fitness</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Income">Income</option>
+            <option value="Uncategorized">Uncategorized</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 pt-3 border-t border-slate-800">
+        <button onclick="closeAddTxModal()" class="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white">Cancel</button>
+        <button onclick="submitNewTx()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">Save Transaction</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIC SCRIPT (Full Client-Side State, Algorithms, Charts, & Storage) -->
+  <script>
+    // Initial 6-month sample dataset matching requirement
+    const DEFAULT_TRANSACTIONS = [
+      { id: 1, date: "2026-04-01", description: "Acme Corp Payroll Direct Deposit", merchant: "Acme Corp", amount: 3200.00, category: "Income" },
+      { id: 2, date: "2026-04-01", description: "Oakwood Property Management Rent", merchant: "Oakwood Property", amount: -1500.00, category: "Housing" },
+      { id: 3, date: "2026-04-02", description: "Trader Joe's Groceries", merchant: "Trader Joe's", amount: -84.50, category: "Groceries" },
+      { id: 4, date: "2026-04-03", description: "Starbucks Coffee", merchant: "Starbucks", amount: -6.75, category: "Food & Dining" },
+      { id: 5, date: "2026-04-04", description: "Netflix Subscription", merchant: "Netflix", amount: -15.99, category: "Entertainment" },
+      { id: 6, date: "2026-04-05", description: "Spotify Premium", merchant: "Spotify", amount: -10.99, category: "Entertainment" },
+      { id: 7, date: "2026-04-08", description: "Metropolitan Electric Utility", merchant: "Electric Utility", amount: -112.40, category: "Utilities" },
+      { id: 8, date: "2026-04-10", description: "Whole Foods Market", merchant: "Whole Foods", amount: -95.30, category: "Groceries" },
+      { id: 9, date: "2026-04-15", description: "Acme Corp Payroll Direct Deposit", merchant: "Acme Corp", amount: 3200.00, category: "Income" },
+      { id: 10, date: "2026-04-15", description: "Planet Fitness Gym Membership", merchant: "Planet Fitness", amount: -45.00, category: "Health & Fitness" },
+      { id: 11, date: "2026-04-25", description: "Comcast Xfinity Internet", merchant: "Comcast", amount: -79.99, category: "Utilities" },
+      { id: 12, date: "2026-05-01", description: "Acme Corp Payroll Direct Deposit", merchant: "Acme Corp", amount: 3200.00, category: "Income" },
+      { id: 13, date: "2026-05-01", description: "Oakwood Property Management Rent", merchant: "Oakwood Property", amount: -1500.00, category: "Housing" },
+      { id: 14, date: "2026-05-04", description: "Netflix Subscription", merchant: "Netflix", amount: -15.99, category: "Entertainment" },
+      { id: 15, date: "2026-05-27", description: "Apex Plumbing Emergency Leak Repair", merchant: "Apex Plumbing", amount: -1250.00, category: "Housing" },
+      { id: 16, date: "2026-06-01", description: "Acme Corp Payroll Direct Deposit", merchant: "Acme Corp", amount: 3200.00, category: "Income" },
+      { id: 17, date: "2026-06-01", description: "Oakwood Property Management Rent", merchant: "Oakwood Property", amount: -1500.00, category: "Housing" },
+      { id: 18, date: "2026-06-04", description: "Netflix Subscription", merchant: "Netflix", amount: -19.99, category: "Entertainment" },
+      { id: 19, date: "2026-07-01", description: "Acme Corp Payroll Direct Deposit", merchant: "Acme Corp", amount: 3200.00, category: "Income" },
+      { id: 20, date: "2026-07-04", description: "Netflix Subscription", merchant: "Netflix", amount: -19.99, category: "Entertainment" },
+      { id: 21, date: "2026-07-23", description: "Best Buy Electronics Tech Purchase", merchant: "Best Buy", amount: -899.00, category: "Shopping" },
+      { id: 22, date: "2026-08-01", description: "Acme Corp Payroll Direct Deposit", merchant: "Acme Corp", amount: 3200.00, category: "Income" },
+      { id: 23, date: "2026-08-04", description: "Netflix Subscription", merchant: "Netflix", amount: -19.99, category: "Entertainment" },
+      { id: 24, date: "2026-09-01", description: "Acme Corp Payroll Direct Deposit", merchant: "Acme Corp", amount: 3200.00, category: "Income" },
+      { id: 25, date: "2026-09-04", description: "Netflix Subscription", merchant: "Netflix", amount: -19.99, category: "Entertainment" }
+    ];
+
+    let transactions = JSON.parse(localStorage.getItem('aegis_txs')) || DEFAULT_TRANSACTIONS;
+    let auditLogs = JSON.parse(localStorage.getItem('aegis_audit')) || [
+      { id: 1, timestamp: new Date(Date.now() - 86400000).toLocaleString(), action: "APPROVED", rec_title: "Emergency Fund Allocation Plan", notes: "Confirmed $250 monthly transfer to high-yield savings." }
+    ];
+    let recommendations = [
+      {
+        id: 1,
+        title: "Netflix price increased by 25%",
+        description: "Your monthly Netflix subscription rose from $15.99 to $19.99 in June, adding $48.00 in extra annual expenses.",
+        category: "recurring_spike",
+        severity: "medium",
+        savings: 4.00,
+        explanation: "[AI Advisor] Netflix increased its tier rate by 25%. If you don't require 4K Ultra-HD streaming on 4 screens simultaneously, downgrading to the Standard plan saves $96.00/year.",
+        status: "PENDING"
+      },
+      {
+        id: 2,
+        title: "Review High Outlier: Apex Plumbing ($1,250.00)",
+        description: "Emergency Leak Repair was flagged by statistical IQR outlier detection (limit: $250).",
+        category: "anomaly_review",
+        severity: "high",
+        savings: 0.00,
+        explanation: "[AI Advisor] This single charge was 5.1x higher than standard home maintenance. Verify invoice legitimacy and confirm if your homeowner insurance reimburses sudden plumbing leaks.",
+        status: "PENDING"
+      }
+    ];
+
+    let goals = [
+      { id: 1, name: "6-Month Emergency Buffer ($10k)", target: 10000, current: 4850, date: "2026-12-31", category: "Emergency Fund" },
+      { id: 2, name: "Autumn Travel Fund", target: 2500, current: 1400, date: "2026-11-15", category: "Travel" }
+    ];
+
+    let currentAnomalyFilter = false;
+    let selectedRecId = null;
+    let selectedAction = null;
+    let forecastChartInstance = null;
+    let momChartInstance = null;
+    let categoryDoughnutInstance = null;
+
+    // Run statistical Anomaly Detection (IQR + Z-Score)
+    function detectAnomalies(txList) {
+      const expenses = txList.filter(t => t.amount < 0).map(t => Math.abs(t.amount));
+      if (expenses.length < 4) return;
+
+      expenses.sort((a, b) => a - b);
+      const q1 = expenses[Math.floor(expenses.length * 0.25)];
+      const q3 = expenses[Math.floor(expenses.length * 0.75)];
+      const iqr = q3 - q1;
+      const upperThreshold = q3 + (1.5 * iqr);
+
+      const mean = expenses.reduce((a, b) => a + b, 0) / expenses.length;
+      const variance = expenses.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / expenses.length;
+      const std = Math.sqrt(variance);
+
+      txList.forEach(t => {
+        if (t.amount >= 0) {
+          t.is_anomaly = false;
+          return;
+        }
+        const exp = Math.abs(t.amount);
+        const z = std > 0 ? (exp - mean) / std : 0;
+        if ((exp > upperThreshold && exp > 50) || (z > 2.5 && exp > 50)) {
+          t.is_anomaly = true;
+          t.anomaly_reason = `Exceeds IQR upper limit ($${upperThreshold.toFixed(2)}) | Z-Score: ${z.toFixed(1)}σ`;
+        } else {
+          t.is_anomaly = false;
+        }
+      });
+    }
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById('page-' + tabId).classList.remove('hidden');
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
+        btn.classList.add('text-slate-400');
+      });
+      const activeBtn = document.getElementById('nav-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
+        activeBtn.classList.remove('text-slate-400');
+      }
+      lucide.createIcons();
+      if (tabId === 'dashboard') renderDashboard();
+      if (tabId === 'transactions') renderTransactions();
+      if (tabId === 'analytics') renderAnalytics();
+      if (tabId === 'goals') renderGoals();
+      if (tabId === 'recommendations') renderRecommendations();
+    }
+
+    // Refresh state and render Dashboard
+    function renderDashboard() {
+      detectAnomalies(transactions);
+
+      let totalIncome = 0;
+      let totalExpense = 0;
+      transactions.forEach(t => {
+        if (t.amount > 0) totalIncome += t.amount;
+        else totalExpense += Math.abs(t.amount);
+      });
+      const netFlow = totalIncome - totalExpense;
+      const savingsRate = totalIncome > 0 ? ((netFlow / totalIncome) * 100).toFixed(1) : 0;
+
+      document.getElementById('stat-income').textContent = `$${totalIncome.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+      document.getElementById('stat-expenses').textContent = `$${totalExpense.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+      document.getElementById('stat-net').textContent = `$${netFlow.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+      document.getElementById('stat-rate').textContent = `${savingsRate}%`;
+
+      // Risk Profile Calculation
+      const monthlyBurn = totalExpense / 5;
+      const runwayMonths = (netFlow > 0 ? (netFlow / monthlyBurn) : 0.5).toFixed(1);
+      let score = 82;
+      let riskLevel = "Low Risk";
+      let meterColor = "#10b981";
+
+      if (runwayMonths < 1.0) { score = 38; riskLevel = "High Risk"; meterColor = "#f43f5e"; }
+      else if (runwayMonths < 2.5) { score = 58; riskLevel = "Moderate Risk"; meterColor = "#f59e0b"; }
+
+      document.getElementById('risk-score-num').textContent = score;
+      document.getElementById('risk-badge').textContent = riskLevel;
+      document.getElementById('risk-runway-val').textContent = `${runwayMonths} months`;
+      document.getElementById('risk-margin-val').textContent = `+${savingsRate}%`;
+
+      const circle = document.getElementById('risk-svg-meter');
+      circle.setAttribute('stroke', meterColor);
+      circle.style.strokeDashoffset = 351.8 - (score / 100) * 351.8;
+
+      // Anomalies list
+      const anomListEl = document.getElementById('anomalies-list');
+      const anoms = transactions.filter(t => t.is_anomaly);
+      if (anoms.length === 0) {
+        anomListEl.innerHTML = '<p class="text-xs text-slate-400 py-4 text-center">No anomalies detected.</p>';
+      } else {
+        anomListEl.innerHTML = anoms.slice(0, 3).map(a => `
+          <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-xs">
+            <div class="flex justify-between font-semibold text-slate-200">
+              <span class="truncate max-w-[150px]">${a.merchant || a.description}</span>
+              <span class="text-rose-400 font-mono">$${Math.abs(a.amount).toFixed(2)}</span>
+            </div>
+            <p class="text-[11px] text-amber-400/90 mt-1">${a.anomaly_reason}</p>
+          </div>
+        `).join('');
+      }
+
+      // 30-Day Forecast Chart
+      renderForecastChart(netFlow);
+      renderMoMChart();
+      lucide.createIcons();
+    }
+
+    function renderForecastChart(currentBalance) {
+      const ctx = document.getElementById('forecastChart').getContext('2d');
+      if (forecastChartInstance) forecastChartInstance.destroy();
+
+      const labels = [];
+      const values = [];
+      const uppers = [];
+      const lowers = [];
+      let running = Math.max(currentBalance, 2500);
+
+      for (let i = 1; i <= 30; i++) {
+        labels.push(`Day ${i}`);
+        // Base moving average burn + occasional pay deposit
+        let netDay = -38;
+        if (i === 1 || i === 15) netDay += 1600; // paycheck
+        if (i === 1) netDay -= 1500; // rent
+        running += netDay;
+        values.push(running);
+        uppers.push(running + (15 * Math.sqrt(i)));
+        lowers.push(running - (15 * Math.sqrt(i)));
+      }
+
+      document.getElementById('forecast-end-val').textContent = `$${running.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+      forecastChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Projected Balance',
+              data: values,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.15)',
+              fill: true,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { size: 10 } } },
+            y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { size: 10 } } }
+          }
+        }
+      });
+    }
+
+    function renderMoMChart() {
+      const ctx = document.getElementById('momChart').getContext('2d');
+      if (momChartInstance) momChartInstance.destroy();
+
+      momChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['April', 'May', 'June', 'July', 'August', 'September'],
+          datasets: [
+            { label: 'Income', data: [6400, 6400, 6400, 6400, 6400, 6400], backgroundColor: '#10b981', borderRadius: 4 },
+            { label: 'Expenses', data: [2150, 3420, 2040, 2980, 2210, 2010], backgroundColor: '#f43f5e', borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
+          scales: {
+            x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } },
+            y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } }
+          }
+        }
+      });
+    }
+
+    // Transactions Table
+    function renderTransactions() {
+      detectAnomalies(transactions);
+      const search = document.getElementById('tx-search-input').value.toLowerCase();
+      const cat = document.getElementById('tx-category-select').value;
+      const tbody = document.getElementById('tx-table-body');
+
+      let filtered = transactions.filter(t => {
+        if (cat !== 'ALL' && t.category !== cat) return false;
+        if (currentAnomalyFilter && !t.is_anomaly) return false;
+        if (search) {
+          const matchDesc = t.description.toLowerCase().includes(search);
+          const matchMerch = t.merchant && t.merchant.toLowerCase().includes(search);
+          const matchAmt = t.amount.toString().includes(search);
+          if (!matchDesc && !matchMerch && !matchAmt) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-500">No matching transactions.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(t => `
+        <tr class="hover:bg-slate-800/30 transition">
+          <td class="py-3 px-4 font-mono text-slate-400 whitespace-nowrap">${t.date}</td>
+          <td class="py-3 px-4 font-medium text-white">${t.description}</td>
+          <td class="py-3 px-4">
+            <span class="px-2 py-0.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700 text-[11px]">${t.category}</span>
+          </td>
+          <td class="py-3 px-4 text-right font-semibold font-mono ${t.amount > 0 ? 'text-emerald-400' : 'text-slate-200'}">
+            ${t.amount > 0 ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}
+          </td>
+          <td class="py-3 px-4 text-center">
+            ${t.is_anomaly ? `
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-semibold" title="${t.anomaly_reason}">
+                <i data-lucide="alert-triangle" class="w-3 h-3"></i> Outlier
+              </span>` : '<span class="text-slate-500 text-[11px]">Normal</span>'}
+          </td>
+          <td class="py-3 px-4 text-right">
+            <button onclick="deleteTx(${t.id})" class="text-slate-500 hover:text-rose-400 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function toggleAnomalyFilter() {
+      currentAnomalyFilter = !currentAnomalyFilter;
+      const btn = document.getElementById('tx-anomaly-filter-btn');
+      if (currentAnomalyFilter) {
+        btn.classList.add('bg-amber-500/20', 'text-amber-300', 'border-amber-500/40');
+      } else {
+        btn.classList.remove('bg-amber-500/20', 'text-amber-300', 'border-amber-500/40');
+      }
+      renderTransactions();
+    }
+
+    function deleteTx(id) {
+      transactions = transactions.filter(t => t.id !== id);
+      saveState();
+      renderTransactions();
+    }
+
+    // Analytics Page
+    function renderAnalytics() {
+      const catTotals = {};
+      let totalOutflow = 0;
+      transactions.filter(t => t.amount < 0).forEach(t => {
+        catTotals[t.category] = (catTotals[t.category] || 0) + Math.abs(t.amount);
+        totalOutflow += Math.abs(t.amount);
+      });
+
+      const catLabels = Object.keys(catTotals);
+      const catValues = Object.values(catTotals);
+      const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6', '#14b8a6', '#64748b'];
+
+      const ctx = document.getElementById('categoryDoughnutChart').getContext('2d');
+      if (categoryDoughnutInstance) categoryDoughnutInstance.destroy();
+
+      categoryDoughnutInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: catLabels,
+          datasets: [{ data: catValues, backgroundColor: colors, borderWidth: 0 }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      const tbody = document.getElementById('category-table-body');
+      tbody.innerHTML = catLabels.map((cat, i) => {
+        const val = catTotals[cat];
+        const pct = totalOutflow > 0 ? ((val / totalOutflow) * 100).toFixed(1) : 0;
+        return `
+          <tr class="hover:bg-slate-800/20">
+            <td class="py-2.5 px-3 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${colors[i % colors.length]}"></span>
+              <span class="font-medium text-slate-200">${cat}</span>
+            </td>
+            <td class="py-2.5 px-3 text-right font-semibold font-mono text-white">$${val.toFixed(2)}</td>
+            <td class="py-2.5 px-3 text-right font-mono text-slate-400">${pct}%</td>
+            <td class="py-2.5 px-3 text-center text-slate-400">${transactions.filter(t => t.category === cat).length}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // Recurring Patterns table
+      const recTableBody = document.getElementById('recurring-table-body');
+      recTableBody.innerHTML = `
+        <tr class="hover:bg-slate-800/20">
+          <td class="py-2.5 px-3 font-semibold text-white">Acme Corp Direct Deposit</td>
+          <td class="py-2.5 px-3 text-slate-400">Income</td>
+          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-800 text-emerald-400 border border-emerald-500/20 text-[10px]">Biweekly</span></td>
+          <td class="py-2.5 px-3 text-right font-semibold font-mono text-emerald-400">+$3,200.00</td>
+          <td class="py-2.5 px-3 text-center text-slate-400 font-mono">1st & 15th</td>
+        </tr>
+        <tr class="hover:bg-slate-800/20">
+          <td class="py-2.5 px-3 font-semibold text-white">Oakwood Property Management</td>
+          <td class="py-2.5 px-3 text-slate-400">Housing</td>
+          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">Monthly</span></td>
+          <td class="py-2.5 px-3 text-right font-semibold font-mono text-white">-$1,500.00</td>
+          <td class="py-2.5 px-3 text-center text-slate-400 font-mono">1st of Month</td>
+        </tr>
+        <tr class="hover:bg-slate-800/20">
+          <td class="py-2.5 px-3 font-semibold text-white">Netflix Subscription</td>
+          <td class="py-2.5 px-3 text-slate-400">Entertainment</td>
+          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">Monthly</span></td>
+          <td class="py-2.5 px-3 text-right font-semibold font-mono text-white">-$19.99</td>
+          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold">+25% Hike Flagged</span></td>
+        </tr>
+        <tr class="hover:bg-slate-800/20">
+          <td class="py-2.5 px-3 font-semibold text-white">Comcast Xfinity Internet</td>
+          <td class="py-2.5 px-3 text-slate-400">Utilities</td>
+          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">Monthly</span></td>
+          <td class="py-2.5 px-3 text-right font-semibold font-mono text-white">-$79.99</td>
+          <td class="py-2.5 px-3 text-center text-slate-400 font-mono">25th of Month</td>
+        </tr>
+      `;
+    }
+
+    // Goals Page
+    function renderGoals() {
+      const grid = document.getElementById('goals-grid');
+      grid.innerHTML = goals.map(g => {
+        const pct = Math.min(((g.current / g.target) * 100), 100).toFixed(1);
+        const rem = Math.max(g.target - g.current, 0).toFixed(2);
+        return `
+          <div class="glass-card p-6 rounded-2xl flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">${g.category}</span>
+                <span class="text-xs text-slate-400">${g.date}</span>
+              </div>
+              <h3 class="font-bold text-white text-base">${g.name}</h3>
+              <div class="mt-3 flex justify-between items-baseline font-mono">
+                <span class="text-2xl font-bold text-white">$${g.current.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span class="text-xs text-slate-400">/ $${g.target.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+              </div>
+              <div class="mt-2 w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div class="h-full bg-emerald-500 rounded-full" style="width: ${pct}%"></div>
+              </div>
+              <div class="mt-2 flex justify-between text-xs text-slate-400">
+                <span>${pct}% Funded</span>
+                <span>$${rem} remaining</span>
+              </div>
+            </div>
+            <button onclick="contributeToGoal(${g.id})" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-xl text-xs font-semibold border border-slate-700 flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-emerald-400"></i> Add $100 Contribution
+            </button>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function contributeToGoal(id) {
+      const g = goals.find(x => x.id === id);
+      if (g) {
+        g.current += 100;
+        renderGoals();
+      }
+    }
+
+    // Recommendations & Human Approval Flow
+    function renderRecommendations() {
+      const pending = recommendations.filter(r => r.status === 'PENDING');
+      document.getElementById('pending-recs-count').textContent = pending.length;
+      document.getElementById('audit-logs-count').textContent = auditLogs.length;
+
+      const paneActive = document.getElementById('rec-pane-active');
+      if (pending.length === 0) {
+        paneActive.innerHTML = '<div class="glass-card p-12 text-center rounded-2xl"><h3 class="font-bold text-white">All Clear! No Pending Actions.</h3></div>';
+      } else {
+        paneActive.innerHTML = pending.map(r => `
+          <div class="glass-card p-6 rounded-2xl space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">${r.severity} Priority</span>
+              ${r.savings > 0 ? `<span class="text-xs font-semibold text-emerald-400 font-mono">Est. Savings: +$${r.savings.toFixed(2)}/mo</span>` : ''}
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-base">${r.title}</h3>
+              <p class="text-xs text-slate-300 mt-1">${r.description}</p>
+            </div>
+            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 text-xs text-slate-300">
+              <span class="font-semibold text-emerald-400 text-[11px] block mb-1">AI Rationale:</span>
+              ${r.explanation}
+            </div>
+            <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
+              <span class="text-[11px] text-slate-500 italic">Requires user confirmation</span>
+              <div class="flex gap-2">
+                <button onclick="promptAction(${r.id}, 'DISMISSED')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700">Dismiss</button>
+                <button onclick="promptAction(${r.id}, 'APPROVED')" class="px-3 py-1.5 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 text-xs border border-blue-500/40">Approve</button>
+                <button onclick="promptAction(${r.id}, 'ACTED_ON')" class="px-4 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/20">Confirm Acted On</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Audit Log
+      const tbody = document.getElementById('audit-table-body');
+      tbody.innerHTML = auditLogs.map(l => `
+        <tr class="hover:bg-slate-800/20">
+          <td class="py-3 px-4 font-mono text-slate-400 whitespace-nowrap">${l.timestamp}</td>
+          <td class="py-3 px-4 font-mono font-bold ${l.action === 'ACTED_ON' ? 'text-emerald-400' : 'text-blue-400'}">${l.action}</td>
+          <td class="py-3 px-4 font-medium text-white">${l.rec_title}</td>
+          <td class="py-3 px-4 text-slate-400">${l.notes}</td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function switchRecTab(tab) {
+      if (tab === 'active') {
+        document.getElementById('rec-pane-active').classList.remove('hidden');
+        document.getElementById('rec-pane-audit').classList.add('hidden');
+        document.getElementById('rec-tab-active').className = "pb-3 text-xs font-semibold text-emerald-400 border-b-2 border-emerald-400 flex items-center gap-2";
+        document.getElementById('rec-tab-audit').className = "pb-3 text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-2";
+      } else {
+        document.getElementById('rec-pane-active').classList.add('hidden');
+        document.getElementById('rec-pane-audit').classList.remove('hidden');
+        document.getElementById('rec-tab-active').className = "pb-3 text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-2";
+        document.getElementById('rec-tab-audit').className = "pb-3 text-xs font-semibold text-emerald-400 border-b-2 border-emerald-400 flex items-center gap-2";
+      }
+      lucide.createIcons();
+    }
+
+    function promptAction(recId, action) {
+      const rec = recommendations.find(r => r.id === recId);
+      if (!rec) return;
+      selectedRecId = recId;
+      selectedAction = action;
+      document.getElementById('modal-rec-title').textContent = rec.title;
+      document.getElementById('modal-action-badge').textContent = action;
+      document.getElementById('modal-notes').value = '';
+      document.getElementById('approval-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById('approval-modal').classList.add('hidden');
+    }
+
+    function confirmApprovalDecision() {
+      const rec = recommendations.find(r => r.id === selectedRecId);
+      if (!rec) return;
+      rec.status = selectedAction;
+      const notes = document.getElementById('modal-notes').value || `Confirmed ${selectedAction} via UI dialog.`;
+
+      auditLogs.unshift({
+        id: Date.now(),
+        timestamp: new Date().toLocaleString(),
+        action: selectedAction,
+        rec_title: rec.title,
+        notes: notes
+      });
+
+      localStorage.setItem('aegis_audit', JSON.stringify(auditLogs));
+      closeModal();
+      renderRecommendations();
+    }
+
+    // CSV Dropzone handler
+    function handleDrop(e) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('border-emerald-500');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        processCSV(e.dataTransfer.files[0]);
+      }
+    }
+
+    function handleFileSelect(e) {
+      if (e.target.files && e.target.files[0]) {
+        processCSV(e.target.files[0]);
+      }
+    }
+
+    function processCSV(file) {
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const text = evt.target.result;
+        const lines = text.split('\n');
+        let count = 0;
+        lines.slice(1).forEach(line => {
+          const parts = line.split(',');
+          if (parts.length >= 3 && parts[0].trim()) {
+            const date = parts[0].trim();
+            const desc = parts[1].trim();
+            const amt = parseFloat(parts[2].trim());
+            const cat = parts[3] ? parts[3].trim() : 'Uncategorized';
+            if (!isNaN(amt)) {
+              transactions.push({
+                id: Date.now() + Math.random(),
+                date: date,
+                description: desc,
+                merchant: desc.split(' ')[0],
+                amount: amt,
+                category: cat
+              });
+              count++;
+            }
+          }
+        });
+        saveState();
+        document.getElementById('upload-result-msg').textContent = `Parsed and imported ${count} new transactions from ${file.name}.`;
+        document.getElementById('upload-result-box').classList.remove('hidden');
+        renderDashboard();
+        lucide.createIcons();
+      };
+      reader.readAsText(file);
+    }
+
+    function openAddTxModal() {
+      document.getElementById('add-tx-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('add-tx-desc').value = '';
+      document.getElementById('add-tx-amount').value = '';
+      document.getElementById('add-tx-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeAddTxModal() {
+      document.getElementById('add-tx-modal').classList.add('hidden');
+    }
+
+    function submitNewTx() {
+      const date = document.getElementById('add-tx-date').value;
+      const desc = document.getElementById('add-tx-desc').value;
+      const amt = parseFloat(document.getElementById('add-tx-amount').value);
+      const cat = document.getElementById('add-tx-category').value;
+      if (!date || !desc || isNaN(amt)) return;
+
+      transactions.unshift({
+        id: Date.now(),
+        date: date,
+        description: desc,
+        merchant: desc.split(' ')[0],
+        amount: amt,
+        category: cat
+      });
+      saveState();
+      closeAddTxModal();
+      renderTransactions();
+    }
+
+    function resetToSampleData() {
+      transactions = [...DEFAULT_TRANSACTIONS];
+      saveState();
+      renderDashboard();
+    }
+
+    function saveState() {
+      localStorage.setItem('aegis_txs', JSON.stringify(transactions));
+    }
+
+    // Initialize application on load
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      renderDashboard();
+    });
+  </script>
+</body>
+</html>
