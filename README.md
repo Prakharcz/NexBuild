@@ -1,13 +1,5 @@
 # 🛡️ AegisFinance: AI-Powered Personal Finance & Financial Risk Agent
 
-[![CI Pipeline](https://github.com/your-username/finance-risk-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/finance-risk-agent/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg)](https://fastapi.tiangolo.com)
-[![React 18](https://img.shields.io/badge/React-18-61dafb.svg)](https://react.dev)
-[![Docker](https://img.shields.io/badge/Docker-Compose-2496ed.svg)](https://www.docker.com)
-[![Zero Cost](https://img.shields.io/badge/API%20Costs-$0.00-brightgreen.svg)]()
-
 A complete, production-grade, self-hosted web application for personal cash flow telemetry, statistical anomaly detection, cash flow forecasting, and financial risk grading. Built with **100% free and open-source tools** — requires **zero paid API keys** and **no third-party auth services**.
 
 ---
@@ -195,5 +187,6 @@ To enable offline AI explanations using Ollama:
 
 ## 📄 License
 This project is open-source software licensed under the [MIT License](LICENSE).
-#   N e x B u i l d  
+#   N e x B u i l d 
+ 
  
